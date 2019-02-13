@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+declare USE_MULTIARCH
+
+if [ $USE_MULTIARCH = "NO" ]; then
+   echo "No multiarch!"
+   exit 0;
+else
+
+docker run --rm --privileged multiarch/qemu-user-static:register --reset
