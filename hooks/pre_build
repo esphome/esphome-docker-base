@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 echo "Installing qemu..."
-docker run --rm --privileged multiarch/qemu-user-static:register --reset
+docker run --rm --privileged hassioaddons/qemu-user-static:latest

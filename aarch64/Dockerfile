@@ -1,6 +1,6 @@
 FROM arm64v8/python:2.7-slim
 
-COPY qemu/qemu-aarch64-static /usr/bin/
+COPY qemu/qemu-aarch64-static /usr/bin/qemu-aarch64-static
 
 RUN \
     apt-get update \

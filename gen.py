@@ -37,7 +37,8 @@ def gen_docker(target_arch, docker_arch, qemu_arch):
     if qemu_arch is None:
         temp = temp.replace('__COPY_QEMU__', '')
     else:
-        line = 'COPY qemu/qemu-{}-static /usr/bin/'.format(qemu_arch)
+        qemu = 'qemu-{}-static'.format(qemu_arch)
+        line = 'COPY qemu/{0} /usr/bin/{0}'.format(qemu)
         temp = temp.replace('__COPY_QEMU__', line)
     print("Generating {}".format(target))
     target.write_text(temp)
@@ -46,7 +47,8 @@ def gen_docker(target_arch, docker_arch, qemu_arch):
 DOCKER_ARCHS = [
     ('amd64', 'amd64', None),
     ('i386', 'i386', None),
-    ('armhf', 'arm32v7', 'arm'),
+    # arm32v6 has no python:2.7[-slim], arm32v7 does not work with qemu
+    # ('armhf', 'arm32v6', 'arm'),
     ('aarch64', 'arm64v8', 'aarch64')
 ]
 
