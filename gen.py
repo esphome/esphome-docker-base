@@ -8,7 +8,10 @@ qemu_path = root_path / 'qemu'
 
 def copy_hook(arch):
     t = root_path / arch / 'hooks'
-    shutil.rmtree(t)
+    if t.exists():
+        shutil.rmtree(t)
+    if arch in ('amd64', 'i386'):
+        return
     shutil.copytree(root_path / 'hooks', t)
 
 def gen_hassio(hassio_arch):
