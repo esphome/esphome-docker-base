@@ -1,0 +1,70 @@
+variables:
+  DOCKER_DRIVER: overlay2
+
+.base: &base
+  before_script:
+    - docker info
+    - docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
+  script:
+    - docker run --rm --privileged hassioaddons/qemu-user-static:latest
+    - TAG="${CI_COMMIT_TAG#v}"
+    - TAG="${TAG:-${CI_COMMIT_SHA:0:7}}"
+    - echo "Tag ${TAG}"
+    - |
+      docker build \
+        --tag "esphome/esphome-hassio-base-${BUILD_ARCH}:${TAG}" \
+        --file "${DOCKERFILE}" \
+        .
+    - docker push esphome/esphome-hassio-base-${BUILD_ARCH}:${TAG}
+  services:
+    - docker:dind
+  tags:
+    - esphome-docker-base
+
+aarch64-docker:
+  <<: *base
+  variables:
+    BUILD_ARCH: aarch64
+    DOCKERFILE: aarch64/Dockerfile
+
+aarch64-hassio:
+  <<: *base
+  variables:
+    BUILD_ARCH: aarch64
+    DOCKERFILE: aarch64/Dockerfile.hassio
+
+amd64-docker:
+  <<: *base
+  variables:
+    BUILD_ARCH: amd64
+    DOCKERFILE: amd64/Dockerfile
+
+amd64-hassio:
+  <<: *base
+  variables:
+    BUILD_ARCH: amd64
+    DOCKERFILE: amd64/Dockerfile.hassio
+
+armhf-docker:
+  <<: *base
+  variables:
+    BUILD_ARCH: armhf
+    DOCKERFILE: armhf/Dockerfile
+
+armhf-hassio:
+  <<: *base
+  variables:
+    BUILD_ARCH: armhf
+    DOCKERFILE: armhf/Dockerfile.hassio
+
+i386-docker:
+  <<: *base
+  variables:
+    BUILD_ARCH: i386
+    DOCKERFILE: i386/Dockerfile
+
+i386-hassio:
+  <<: *base
+  variables:
+    BUILD_ARCH: i386
+    DOCKERFILE: i386/Dockerfile.hassio
