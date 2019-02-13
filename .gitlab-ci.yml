@@ -11,13 +11,25 @@ variables:
     - docker run --rm --privileged hassioaddons/qemu-user-static:latest
     - TAG="${CI_COMMIT_TAG#v}"
     - TAG="${TAG:-${CI_COMMIT_SHA:0:7}}"
-    - echo "Tag ${TAG}"
+
+    - |
+      if [[ "${IS_HASSIO}" == "YES" ]]; then
+        BUILD_TO=esphome/esphome-hassio-base-${BUILD_ARCH}
+        DOCKERFILE=${BUILD_ARCH}/Dockerfile.hassio
+      else
+        BUILD_TO=esphome/esphome-base-${BUILD_ARCH}
+        DOCKERFILE=${BUILD_ARCH}/Dockerfile.hassio
+      fi
+    - echo "BUILD_TO ${BUILD_TO}"
+    - echo "TAG ${TAG}"
+    - echo "DOCKERFILE ${DOCKERFILE}"
+
     - |
       docker build \
-        --tag "esphome/esphome-hassio-base-${BUILD_ARCH}:${TAG}" \
+        --tag "${BUILD_TO}:${TAG}" \
         --file "${DOCKERFILE}" \
         .
-    - docker push esphome/esphome-hassio-base-${BUILD_ARCH}:${TAG}
+    - docker push ${BUILD_TO}:${TAG}
   services:
     - docker:dind
   tags:
@@ -27,46 +39,46 @@ variables:
 #  <<: *base
 #  variables:
 #    BUILD_ARCH: aarch64
-#    DOCKERFILE: aarch64/Dockerfile
+#    IS_HASSIO: "NO"
 
 aarch64-hassio:
   <<: *base
   variables:
     BUILD_ARCH: aarch64
-    DOCKERFILE: aarch64/Dockerfile.hassio
+    IS_HASSIO: "YES"
 
 amd64-docker:
   <<: *base
   variables:
     BUILD_ARCH: amd64
-    DOCKERFILE: amd64/Dockerfile
+    IS_HASSIO: "NO"
 
 amd64-hassio:
   <<: *base
   variables:
     BUILD_ARCH: amd64
-    DOCKERFILE: amd64/Dockerfile.hassio
+    IS_HASSIO: "YES"
 
 #armhf-docker:
 #  <<: *base
 #  variables:
 #    BUILD_ARCH: armhf
-#    DOCKERFILE: armhf/Dockerfile
+#    IS_HASSIO: "NO"
 
 armhf-hassio:
   <<: *base
   variables:
     BUILD_ARCH: armhf
-    DOCKERFILE: armhf/Dockerfile.hassio
+    IS_HASSIO: "YES"
 
 i386-docker:
   <<: *base
   variables:
     BUILD_ARCH: i386
-    DOCKERFILE: i386/Dockerfile
+    IS_HASSIO: "NO"
 
 i386-hassio:
   <<: *base
   variables:
     BUILD_ARCH: i386
-    DOCKERFILE: i386/Dockerfile.hassio
+    IS_HASSIO: "NYES"
