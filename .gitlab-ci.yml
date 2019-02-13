@@ -23,11 +23,11 @@ variables:
   tags:
     - docker
 
-aarch64-docker:
-  <<: *base
-  variables:
-    BUILD_ARCH: aarch64
-    DOCKERFILE: aarch64/Dockerfile
+#aarch64-docker:
+#  <<: *base
+#  variables:
+#    BUILD_ARCH: aarch64
+#    DOCKERFILE: aarch64/Dockerfile
 
 aarch64-hassio:
   <<: *base
@@ -47,11 +47,11 @@ amd64-hassio:
     BUILD_ARCH: amd64
     DOCKERFILE: amd64/Dockerfile.hassio
 
-armhf-docker:
-  <<: *base
-  variables:
-    BUILD_ARCH: armhf
-    DOCKERFILE: armhf/Dockerfile
+#armhf-docker:
+#  <<: *base
+#  variables:
+#    BUILD_ARCH: armhf
+#    DOCKERFILE: armhf/Dockerfile
 
 armhf-hassio:
   <<: *base
