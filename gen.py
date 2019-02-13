@@ -42,9 +42,6 @@ def gen_docker(target_arch, docker_arch, qemu_arch):
     print("Generating {}".format(target))
     target.write_text(temp)
     copy_hook(target_arch)
-    if qemu_arch is not None:
-        f = 'qemu-{}-static'.format(qemu_arch)
-        shutil.copy(qemu_path / f, d / f)
 
 DOCKER_ARCHS = [
     ('amd64', 'amd64', None),
