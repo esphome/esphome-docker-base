@@ -1,9 +1,19 @@
 from pathlib import Path
+import shutil
 
 root_path = Path('.')
 hassio_template = root_path / 'template' / 'Dockerfile.hassio'
 docker_template = root_path / 'template' / 'Dockerfile'
 qemu_path = root_path / 'qemu'
+
+
+def copy_hook(arch):
+    t = root_path / arch / 'hooks'
+    if t.exists():
+        shutil.rmtree(t)
+    if arch in ('amd64', 'i386'):
+        return
+    shutil.copytree(root_path / 'hooks', t)
 
 
 def gen_hassio(hassio_arch):
@@ -14,6 +24,7 @@ def gen_hassio(hassio_arch):
     temp = temp.replace('__HASSIO_ARCH__', hassio_arch)
     print("Generating {}".format(target))
     target.write_text(temp)
+    copy_hook(hassio_arch)
 
 
 HASSIO_ARCHS = ['amd64', 'i386', 'armhf', 'aarch64']
@@ -35,12 +46,13 @@ def gen_docker(target_arch, docker_arch, qemu_arch):
         temp = temp.replace('__COPY_QEMU__', line)
     print("Generating {}".format(target))
     target.write_text(temp)
+    copy_hook(target_arch)
 
 DOCKER_ARCHS = [
     ('amd64', 'amd64', None),
     ('i386', 'i386', None),
-    ('armhf', 'arm32v7', 'arm'),
-    ('aarch64', 'arm64v8', 'aarch64')
+    # ('armhf', 'arm32v7', 'arm'),
+    # ('aarch64', 'arm64v8', 'aarch64')
 ]
 
 for t, d, q in DOCKER_ARCHS:
