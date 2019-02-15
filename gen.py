@@ -51,8 +51,8 @@ def gen_docker(target_arch, docker_arch, qemu_arch):
 DOCKER_ARCHS = [
     ('amd64', 'amd64', None),
     ('i386', 'i386', None),
-    # ('armhf', 'arm32v7', 'arm'),
-    # ('aarch64', 'arm64v8', 'aarch64')
+    ('armhf', 'armhf', 'arm'),
+    ('aarch64', 'arm64v8', 'aarch64')
 ]
 
 for t, d, q in DOCKER_ARCHS:

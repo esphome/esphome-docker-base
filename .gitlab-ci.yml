@@ -8,7 +8,21 @@ variables:
     - docker info
     - docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
   script:
-    - docker run --rm --privileged hassioaddons/qemu-user-static:latest
+    - |
+      if [ ! -f /proc/sys/fs/binfmt_misc/register ]; then
+        echo "Mounting binfmt_misc"
+        mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
+      fi
+    - |
+      if [[ ${BUILD_ARCH} = "armhf" ]]; then
+        echo "Enabling arm binfmt"
+        update-binfmts --enable qemu-arm
+      fi
+    - |
+      if [[ ${BUILD_ARCH} = "aarch64" ]]; then
+        echo "Enabling aarch64 binfmt"
+        update-binfmts --enable qemu-aarch64
+      fi
     - TAG="${CI_COMMIT_TAG#v}"
     - TAG="${TAG:-${CI_COMMIT_SHA:0:7}}"
 
