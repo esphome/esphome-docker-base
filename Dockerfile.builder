@@ -1,4 +1,4 @@
-FROM multiarch/ubuntu-core:amd64-xenial
+FROM homeassistant/amd64-base-ubuntu:16.04
 
 ENV LANG C.UTF-8
 
