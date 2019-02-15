@@ -1,4 +1,7 @@
+# This is an auto-generated file, please edit template/Dockerfile.hassio!
 FROM hassioaddons/ubuntu-base-i386:2.2.1
+
+
 
 # Set shell
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]

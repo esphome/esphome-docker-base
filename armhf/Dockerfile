@@ -1,3 +1,4 @@
+# This is an auto-generated file, please edit template/Dockerfile!
 FROM armhf/python:2.7-slim
 
 COPY qemu/qemu-arm-static /usr/bin/qemu-arm-static

@@ -1,3 +1,4 @@
+# This is an auto-generated file, please edit template/Dockerfile!
 FROM i386/python:2.7-slim
 
 

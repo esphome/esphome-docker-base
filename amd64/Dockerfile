@@ -1,3 +1,4 @@
+# This is an auto-generated file, please edit template/Dockerfile!
 FROM amd64/python:2.7-slim
 
 

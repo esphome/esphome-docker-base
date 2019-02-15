@@ -1,3 +1,4 @@
+# This is an auto-generated file, please edit template/Dockerfile!
 FROM arm64v8/python:2.7-slim
 
 COPY qemu/qemu-aarch64-static /usr/bin/qemu-aarch64-static

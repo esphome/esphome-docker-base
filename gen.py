@@ -22,13 +22,25 @@ def gen_hassio(hassio_arch):
     temp = hassio_template.read_text()
     target = d / 'Dockerfile.hassio'
     temp = temp.replace('__HASSIO_ARCH__', hassio_arch)
+    if qemu_arch is None:
+        temp = temp.replace('__COPY_QEMU__', '')
+    else:
+        qemu = 'qemu-{}-static'.format(qemu_arch)
+        line = 'COPY qemu/{0} /usr/bin/{0}'.format(qemu)
+        temp = temp.replace('__COPY_QEMU__', line)
+    temp = "# This is an auto-generated file, please edit template/Dockerfile.hassio!\n" + temp
     print("Generating {}".format(target))
     target.write_text(temp)
     copy_hook(hassio_arch)
 
 
-HASSIO_ARCHS = ['amd64', 'i386', 'armhf', 'aarch64']
-for arch in HASSIO_ARCHS:
+HASSIO_ARCHS = [
+    ('amd64', None),
+    ('i386', None),
+    ('armhf', 'arm'),
+    ('aarch64', 'aarch64'),
+]
+for arch, qemu_arch in HASSIO_ARCHS:
     gen_hassio(arch)
 
 
@@ -44,15 +56,17 @@ def gen_docker(target_arch, docker_arch, qemu_arch):
         qemu = 'qemu-{}-static'.format(qemu_arch)
         line = 'COPY qemu/{0} /usr/bin/{0}'.format(qemu)
         temp = temp.replace('__COPY_QEMU__', line)
+    temp = "# This is an auto-generated file, please edit template/Dockerfile!\n" + temp
     print("Generating {}".format(target))
     target.write_text(temp)
     copy_hook(target_arch)
 
+
 DOCKER_ARCHS = [
     ('amd64', 'amd64', None),
     ('i386', 'i386', None),
-    ('armhf', 'armhf', 'arm'),
-    ('aarch64', 'arm64v8', 'aarch64')
+    ('armhf', 'armhf', 'arm'),  # arm32v6/arm32v7 do not have non-alpine versions of python
+    ('aarch64', 'arm64v8', 'aarch64'),
 ]
 
 for t, d, q in DOCKER_ARCHS:
