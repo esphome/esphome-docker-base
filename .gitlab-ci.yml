@@ -27,12 +27,12 @@ variables:
     - TAG="${TAG:-${CI_COMMIT_SHA:0:7}}"
 
     - |
-      if [[ "${IS_HASSIO}" == "YES" ]]; then
+      if [[ "${IS_HASSIO}" = "YES" ]]; then
         BUILD_TO=esphome/esphome-hassio-base-${BUILD_ARCH}
         DOCKERFILE=${BUILD_ARCH}/Dockerfile.hassio
       else
         BUILD_TO=esphome/esphome-base-${BUILD_ARCH}
-        DOCKERFILE=${BUILD_ARCH}/Dockerfile.hassio
+        DOCKERFILE=${BUILD_ARCH}/Dockerfile
       fi
     - echo "BUILD_TO ${BUILD_TO}"
     - echo "TAG ${TAG}"
