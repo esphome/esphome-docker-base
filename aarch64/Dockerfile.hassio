@@ -1,7 +1,5 @@
 # This is an auto-generated file, please edit template/Dockerfile.hassio!
-FROM hassioaddons/ubuntu-base-aarch64:2.2.1
-
-COPY qemu/qemu-aarch64-static /usr/bin/qemu-aarch64-static
+FROM hassioaddons/ubuntu-base-aarch64:2.2.0
 
 # Set shell
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]

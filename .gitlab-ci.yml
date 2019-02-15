@@ -36,11 +36,11 @@ variables:
   tags:
     - docker
 
-aarch64-docker:
-  <<: *base
-  variables:
-    BUILD_ARCH: aarch64
-    IS_HASSIO: "NO"
+#aarch64-docker:
+#  <<: *base
+#  variables:
+#    BUILD_ARCH: aarch64
+#    IS_HASSIO: "NO"
 
 aarch64-hassio:
   <<: *base
@@ -60,11 +60,11 @@ amd64-hassio:
     BUILD_ARCH: amd64
     IS_HASSIO: "YES"
 
-armhf-docker:
-  <<: *base
-  variables:
-    BUILD_ARCH: armhf
-    IS_HASSIO: "NO"
+#armhf-docker:
+#  <<: *base
+#  variables:
+#    BUILD_ARCH: armhf
+#    IS_HASSIO: "NO"
 
 armhf-hassio:
   <<: *base
