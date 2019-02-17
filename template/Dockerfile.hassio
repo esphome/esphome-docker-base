@@ -9,6 +9,7 @@ RUN \
         python \
         python-pip \
         python-setuptools \
+        python-pil \
         git \
         nginx \
     && rm -rf \

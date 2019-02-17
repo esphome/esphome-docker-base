@@ -8,6 +8,7 @@ RUN \
         python \
         python-pip \
         python-setuptools \
+        python-pil \
         git \
     && rm -rf \
         /tmp/* \
