@@ -1,8 +1,7 @@
-# This is an auto-generated file, please edit template/Dockerfile.hassio!
-FROM hassioaddons/ubuntu-base-amd64:2.3.0
+# This is an auto-generated file, please edit template/Dockerfile!
+FROM arm32v7/ubuntu:bionic
 
-# Set shell
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+COPY qemu/qemu-arm-static /usr/bin/qemu-arm-static
 
 RUN \
     apt-get update \
@@ -11,7 +10,6 @@ RUN \
         python-pip \
         python-setuptools \
         git \
-        nginx \
     && rm -rf \
         /tmp/* \
         /var/{cache,log}/* \
@@ -31,5 +29,5 @@ RUN \
     && (platformio run -d /opt/pio; echo "Done") \
     && rm -rf /opt/pio/
 
-LABEL \
-    io.hass.arch="amd64"
+VOLUME /config
+WORKDIR /usr/src/app

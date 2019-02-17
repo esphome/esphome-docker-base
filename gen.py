@@ -66,8 +66,8 @@ def gen_docker(target_arch, docker_arch, qemu_arch):
 DOCKER_ARCHS = [
     ('amd64', 'amd64', None),
     ('i386', 'i386', None),
-    # ('armhf', 'armhf', 'arm'),  # arm32v6/arm32v7 do not have non-alpine versions of python
-    # ('aarch64', 'arm64v8', 'aarch64'),
+    ('armhf', 'arm32v7', 'arm'),
+    ('aarch64', 'arm64v8', 'aarch64'),
 ]
 
 for t, d, q in DOCKER_ARCHS:
