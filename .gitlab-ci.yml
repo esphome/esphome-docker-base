@@ -82,4 +82,4 @@ i386-hassio:
   <<: *base
   variables:
     BUILD_ARCH: i386
-    IS_HASSIO: "NYES"
+    IS_HASSIO: "YES"
