@@ -19,7 +19,7 @@ RUN \
 COPY platformio.ini /opt/pio/
 
 RUN \
-    pip2 install --no-cache-dir --no-binary :all: platformio==3.6.4 \
+    pip2 install --no-cache-dir --no-binary :all: platformio==3.6.5 \
     # Change some platformio settings
     && platformio settings set enable_telemetry No \
     && platformio settings set check_libraries_interval 1000000 \
