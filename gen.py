@@ -17,11 +17,12 @@ def copy_hook(arch):
     shutil.copytree(hooks_path, t)
 
 
-def gen_hassio(hassio_arch):
+def gen_hassio(hassio_arch, source):
     d = root_path / hassio_arch
     d.mkdir(exist_ok=True)
     temp = hassio_template.read_text()
     target = d / 'Dockerfile.hassio'
+    temp = temp.replace('__SOURCE_ARCH__', source)
     temp = temp.replace('__HASSIO_ARCH__', hassio_arch)
     if qemu_arch is None:
         temp = temp.replace('__COPY_QEMU__', '')
@@ -36,13 +37,13 @@ def gen_hassio(hassio_arch):
 
 
 HASSIO_ARCHS = [
-    ('amd64', None),
-    ('i386', None),
-    ('armhf', 'arm'),
-    ('aarch64', 'aarch64'),
+    ('amd64', None, None),
+    ('i386', None, None),
+    ('armhf', 'arm', 'armv7'),
+    ('aarch64', 'aarch64', None),
 ]
-for arch, qemu_arch in HASSIO_ARCHS:
-    gen_hassio(arch)
+for arch, qemu_arch, source in HASSIO_ARCHS:
+    gen_hassio(arch, source or arch)
 
 
 def gen_docker(target_arch, docker_arch, qemu_arch):
