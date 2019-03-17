@@ -1,4 +1,4 @@
-FROM hassioaddons/ubuntu-base-__HASSIO_ARCH__:2.3.0
+FROM hassioaddons/ubuntu-base-__HASSIO_ARCH__:3.0.0
 
 # Set shell
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -20,7 +20,7 @@ RUN \
 COPY platformio.ini /opt/pio/
 
 RUN \
-    pip2 install --no-cache-dir --no-binary :all: platformio==3.6.4 \
+    pip2 install --no-cache-dir --no-binary :all: platformio==3.6.5 \
     # Change some platformio settings
     && platformio settings set enable_telemetry No \
     && platformio settings set check_libraries_interval 1000000 \
