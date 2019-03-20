@@ -9,6 +9,7 @@ RUN \
         python-pip \
         python-setuptools \
         python-pil \
+        iputils-ping \
         git \
     && rm -rf \
         /tmp/* \
