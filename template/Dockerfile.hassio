@@ -10,6 +10,7 @@ RUN \
         python-pip \
         python-setuptools \
         python-pil \
+        iputils-ping \
         git \
         nginx \
     && rm -rf \
