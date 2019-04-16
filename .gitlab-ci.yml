@@ -60,16 +60,16 @@ amd64-hassio:
     BUILD_ARCH: amd64
     IS_HASSIO: "YES"
 
-armhf-docker:
+armv7-docker:
   <<: *base
   variables:
-    BUILD_ARCH: armhf
+    BUILD_ARCH: armv7
     IS_HASSIO: "NO"
 
-armhf-hassio:
+armv7-hassio:
   <<: *base
   variables:
-    BUILD_ARCH: armhf
+    BUILD_ARCH: armv7
     IS_HASSIO: "YES"
 
 i386-docker:
