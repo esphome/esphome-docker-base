@@ -1,7 +1,7 @@
 # This is an auto-generated file, please edit template/Dockerfile!
-FROM arm64v8/ubuntu:bionic
+FROM arm32v7/ubuntu:bionic
 
-COPY qemu/qemu-aarch64-static /usr/bin/qemu-aarch64-static
+COPY qemu/qemu-arm-static /usr/bin/qemu-arm-static
 
 RUN \
     apt-get update \
