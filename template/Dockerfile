@@ -11,6 +11,7 @@ RUN \
         python-pil \
         iputils-ping \
         git \
+        curl \
     && rm -rf \
         /tmp/* \
         /var/{cache,log}/* \

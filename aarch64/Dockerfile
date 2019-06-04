@@ -1,7 +1,7 @@
 # This is an auto-generated file, please edit template/Dockerfile!
 FROM arm64v8/ubuntu:bionic
 
-COPY qemu/qemu-arm-static /usr/bin/qemu-arm-static
+COPY qemu/qemu-aarch64-static /usr/bin/qemu-aarch64-static
 
 RUN \
     apt-get update \
@@ -12,6 +12,7 @@ RUN \
         python-pil \
         iputils-ping \
         git \
+        curl \
     && rm -rf \
         /tmp/* \
         /var/{cache,log}/* \

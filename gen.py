@@ -67,7 +67,7 @@ DOCKER_ARCHS = [
     ('amd64', 'amd64', None),
     ('i386', 'i386', None),
     ('armv7', 'arm32v7', 'arm'),
-    ('aarch64', 'arm64v8', 'arm'),
+    ('aarch64', 'arm64v8', 'aarch64'),
 ]
 
 for t, d, q in DOCKER_ARCHS:
