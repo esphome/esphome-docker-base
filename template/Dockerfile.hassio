@@ -32,5 +32,7 @@ RUN \
     && (platformio run -d /opt/pio; echo "Done") \
     && rm -rf /opt/pio/
 
+__PATCH_AARCH64__
+
 LABEL \
     io.hass.arch="__HASSIO_ARCH__"

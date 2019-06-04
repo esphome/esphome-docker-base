@@ -1,5 +1,5 @@
 # This is an auto-generated file, please edit template/Dockerfile!
-FROM arm32v7/ubuntu:bionic
+FROM arm64v8/ubuntu:bionic
 
 COPY qemu/qemu-arm-static /usr/bin/qemu-arm-static
 
@@ -30,6 +30,14 @@ RUN \
     # The return-code will be non-zero since there's nothing to build.
     && (platformio run -d /opt/pio; echo "Done") \
     && rm -rf /opt/pio/
+
+
+RUN \
+    curl -sSL -o /toolchain-xtensa32.tar.gz \
+        https://github.com/esphome/esphome-docker-base/releases/download/v1.4.0/toolchain-xtensa32.tar.gz \
+    && tar -xzvf /toolchain-xtensa32.tar.gz -C /root/.platformio/packages/ \
+    && rm /toolchain-xtensa32.tar.gz
+
 
 VOLUME /config
 WORKDIR /usr/src/app

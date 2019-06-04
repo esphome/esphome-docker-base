@@ -30,5 +30,7 @@ RUN \
     && (platformio run -d /opt/pio; echo "Done") \
     && rm -rf /opt/pio/
 
+__PATCH_AARCH64__
+
 VOLUME /config
 WORKDIR /usr/src/app
