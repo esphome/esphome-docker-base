@@ -33,7 +33,5 @@ RUN \
     && (platformio run -d /opt/pio; echo "Done") \
     && rm -rf /opt/pio/
 
-
-
 LABEL \
     io.hass.arch="amd64"

@@ -29,9 +29,7 @@ RUN \
     # Build an empty platformio project to force platformio to install all fw build dependencies
     # The return-code will be non-zero since there's nothing to build.
     && (platformio run -d /opt/pio; echo "Done") \
-    && rm -rf /opt/pio/
-
-__PATCH_AARCH64__
+    && rm -rf /opt/pio/__PATCH_AARCH64__
 
 VOLUME /config
 WORKDIR /usr/src/app

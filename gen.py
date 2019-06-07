@@ -6,15 +6,17 @@ hassio_template = root_path / 'template' / 'Dockerfile.hassio'
 docker_template = root_path / 'template' / 'Dockerfile'
 qemu_path = root_path / 'qemu'
 
-patch_aarch64 = r"""
-RUN \
-    curl -sSL -o /toolchain-xtensa32.tar.gz \
-        https://github.com/esphome/esphome-docker-base/releases/download/v1.4.0/toolchain-xtensa32.tar.gz \
+patch_aarch64 = r""" \
+    \
+    && rm -rf /root/.platformio/packages/toolchain-xtensa32 \
+    && curl -sSL -o /toolchain-xtensa32.tar.gz \
+         https://github.com/esphome/esphome-docker-base/releases/download/v1.4.0/toolchain-xtensa32.tar.gz \
     && tar -xzvf /toolchain-xtensa32.tar.gz -C /root/.platformio/packages/ \
     && rm /toolchain-xtensa32.tar.gz \
     \
+    && rm -rf /root/.platformio/packages/toolchain-xtensa \
     && curl -sSL -o /toolchain-xtensa.tar.gz \
-        https://github.com/esphome/esphome-docker-base/releases/download/v1.4.0/toolchain-xtensa.tar.gz \
+         https://github.com/esphome/esphome-docker-base/releases/download/v1.4.0/toolchain-xtensa.tar.gz \
     && tar -xzvf /toolchain-xtensa.tar.gz -C /root/.platformio/packages/ \
     && rm /toolchain-xtensa.tar.gz
 """
