@@ -7,10 +7,10 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN \
     apt-get update \
     && apt-get install -y --no-install-recommends \
-        python \
-        python-pip \
-        python-setuptools \
-        python-pil \
+        python3 \
+        python3-pip \
+        python3-setuptools \
+        python3-pil \
         iputils-ping \
         git \
         nginx \
@@ -25,7 +25,7 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 COPY platformio.ini /opt/pio/
 
 RUN \
-    pip2 install --no-cache-dir --no-binary :all: platformio==4.0.3 \
+    pip3 install --no-cache-dir --no-binary :all: platformio==4.0.3 \
     # Change some platformio settings
     && platformio settings set enable_telemetry No \
     && platformio settings set check_libraries_interval 1000000 \
@@ -39,13 +39,13 @@ RUN \
     && rm -rf /root/.platformio/packages/toolchain-xtensa32 \
     && curl -sSL -o /toolchain-xtensa32.tar.gz \
          https://github.com/esphome/esphome-docker-base/releases/download/v1.4.0/toolchain-xtensa32.tar.gz \
-    && tar -xzvf /toolchain-xtensa32.tar.gz -C /root/.platformio/packages/ \
+    && tar -xzf /toolchain-xtensa32.tar.gz -C /root/.platformio/packages/ \
     && rm /toolchain-xtensa32.tar.gz \
     \
     && rm -rf /root/.platformio/packages/toolchain-xtensa \
     && curl -sSL -o /toolchain-xtensa.tar.gz \
          https://github.com/esphome/esphome-docker-base/releases/download/v1.4.0/toolchain-xtensa.tar.gz \
-    && tar -xzvf /toolchain-xtensa.tar.gz -C /root/.platformio/packages/ \
+    && tar -xzf /toolchain-xtensa.tar.gz -C /root/.platformio/packages/ \
     && rm /toolchain-xtensa.tar.gz
 
 
