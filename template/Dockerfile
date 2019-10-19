@@ -17,6 +17,9 @@ RUN \
         /var/{cache,log}/* \
         /var/lib/apt/lists/*
 
+# Fix click python3 lang warning https://click.palletsprojects.com/en/7.x/python3/
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+
 COPY platformio.ini /opt/pio/
 
 RUN \
