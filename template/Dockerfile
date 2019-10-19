@@ -5,10 +5,10 @@ __COPY_QEMU__
 RUN \
     apt-get update \
     && apt-get install -y --no-install-recommends \
-        python \
-        python-pip \
-        python-setuptools \
-        python-pil \
+        python3 \
+        python3-pip \
+        python3-setuptools \
+        python3-pil \
         iputils-ping \
         git \
         curl \
@@ -20,7 +20,7 @@ RUN \
 COPY platformio.ini /opt/pio/
 
 RUN \
-    pip2 install --no-cache-dir --no-binary :all: platformio==4.0.3 \
+    pip3 install --no-cache-dir --no-binary :all: platformio==4.0.3 \
     # Change some platformio settings
     && platformio settings set enable_telemetry No \
     && platformio settings set check_libraries_interval 1000000 \
