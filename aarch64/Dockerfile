@@ -41,10 +41,11 @@ RUN \
     && tar -xzf /toolchain-xtensa32.tar.gz -C /root/.platformio/packages/ \
     && rm /toolchain-xtensa32.tar.gz \
     \
-    && rm -rf /root/.platformio/packages/toolchain-xtensa \
+    && rm -rf /root/.platformio/packages/toolchain-xtensa@1.40802.2 \
+    && mkdir /root/.platformio/packages/toolchain-xtensa@1.40802.2 \
     && curl -sSL -o /toolchain-xtensa.tar.gz \
          https://github.com/esphome/esphome-docker-base/releases/download/v1.4.0/toolchain-xtensa.tar.gz \
-    && tar -xzf /toolchain-xtensa.tar.gz -C /root/.platformio/packages/ \
+    && tar -xzf /toolchain-xtensa.tar.gz --strip-components=1 -C /root/.platformio/packages/toolchain-xtensa@1.40802.2 \
     && rm /toolchain-xtensa.tar.gz
 
 
