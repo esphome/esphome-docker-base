@@ -30,7 +30,7 @@ def replace_patch_aarch64(temp, arch):
         return temp.replace('__PATCH_AARCH64__', '')
 
 
-def gen_hassio(hassio_arch, base_arch):
+def gen_hassio(hassio_arch, base_arch, qemu_arch):
     d = root_path / hassio_arch
     d.mkdir(exist_ok=True)
     temp = hassio_template.read_text()
@@ -38,19 +38,25 @@ def gen_hassio(hassio_arch, base_arch):
     temp = temp.replace('__HASSIO_ARCH__', hassio_arch)
     temp = temp.replace('__UBUNTU_BASE_ARCH__', base_arch)
     temp = replace_patch_aarch64(temp, hassio_arch)
+    if qemu_arch is None:
+        temp = temp.replace('__COPY_QEMU__', '')
+    else:
+        qemu = 'qemu-{}-static'.format(qemu_arch)
+        line = 'COPY qemu/{0} /usr/bin/{0}'.format(qemu)
+        temp = temp.replace('__COPY_QEMU__', line)
     temp = "# This is an auto-generated file, please edit template/Dockerfile.hassio!\n" + temp
     print("Generating {}".format(target))
     target.write_text(temp)
 
 
 HASSIO_ARCHS = [
-    ('amd64', 'amd64'),
-    ('i386', 'i386'),
-    ('armv7', 'armv7'),
-    ('aarch64', 'aarch64'),
+    ('amd64', 'amd64', None),
+    ('i386', 'i386', None),
+    ('armv7', 'armv7', 'arm'),
+    ('aarch64', 'aarch64', 'aarch64'),
 ]
-for arch, base_arch in HASSIO_ARCHS:
-    gen_hassio(arch, base_arch)
+for arch, base_arch, qemu_arch in HASSIO_ARCHS:
+    gen_hassio(arch, base_arch, qemu_arch)
 
 
 def gen_docker(target_arch, docker_arch, qemu_arch):

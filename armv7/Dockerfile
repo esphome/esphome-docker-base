@@ -24,7 +24,7 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 COPY platformio.ini /opt/pio/
 
 RUN \
-    pip3 install --no-cache-dir --no-binary :all: platformio==4.3.3 \
+    pip3 install --no-cache-dir --no-binary :all: platformio==4.3.4 \
     # Change some platformio settings
     && platformio settings set enable_telemetry No \
     && platformio settings set check_libraries_interval 1000000 \
