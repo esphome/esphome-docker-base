@@ -1,4 +1,4 @@
-FROM homeassistant/amd64-base-ubuntu:16.04
+FROM ubuntu:bionic
 
 ENV LANG C.UTF-8
 
