@@ -55,6 +55,38 @@ jobs:
           docker tag "${IMAGE}" "${BUILD_TO}:latest"
           docker push "${BUILD_TO}:latest"
 
+  deploy-lint:
+    name: Build and publish lint docker container
+    needs: [deploy-docker]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Register QEMU binfmt
+        run: docker run --rm --privileged multiarch/qemu-user-static:5.0.0-2 --reset -p yes
+      - run: |
+          docker build \
+            --tag "esphome/esphome-lint-base:latest" \
+            --file "Dockerfile.lint" \
+            --build-arg BUILD_FROM=esphome/esphome-base-amd64:latest \
+            --cache-from "esphome/esphome-lint-base:latest" \
+            --cache-from "esphome/esphome-lint-base:dev" \
+            .
+      - name: Log in to docker hub
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASSWORD}"
+      - run: docker push "esphome/esphome-lint-base:latest"
+      - run: |
+          tag="${GITHUB_REF#v}"
+          docker tag esphome/esphome-lint-base:latest "esphome/esphome-lint-base:${tag}"
+          docker push "esphome/esphome-lint-base:${tag}"
+
   deploy-docker-manifest:
     runs-on: ubuntu-latest
     needs: [deploy-docker]
