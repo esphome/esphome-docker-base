@@ -2,22 +2,24 @@ ARG BUILD_FROM=esphome/esphome-base-amd64:latest
 FROM ${BUILD_FROM}
 
 RUN \
-    # Update to latest git version because of github actions
-    # https://github.com/actions/checkout/issues/126
-    apt-add-repository ppa:git-core/ppa \
-    && apt-get update \
+    apt-get update \
     && apt-get install -y --no-install-recommends \
         clang-format-7 \
         clang-tidy-7 \
         patch \
         software-properties-common \
         git \
+    # Update to latest git version because of github actions
+    # https://github.com/actions/checkout/issues/126
+    && apt-add-repository ppa:git-core/ppa \
+    && apt-get install -y --no-install-recommends \
+        git \
     && rm -rf \
         /tmp/* \
         /var/{cache,log}/* \
         /var/lib/apt/lists/*
 
-COPY platformio-lint.ini /opt/pio/
+COPY platformio-lint.ini /opt/pio/platformio.ini
 
 RUN \
     # Build an empty platformio project to force platformio to install all fw build dependencies
