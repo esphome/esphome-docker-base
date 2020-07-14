@@ -29,6 +29,8 @@ jobs:
         build_type: ["hassio", "docker"]
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Set up env variables
         run: |
           tag="dev"
