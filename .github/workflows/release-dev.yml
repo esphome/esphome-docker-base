@@ -7,8 +7,13 @@ on:
     - gh-actions-test
 
 jobs:
-  lint:
+  deploy-docker:
+    name: Build and publish docker containers
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [amd64, i386, armv7, aarch64]
+        build_type: ["hassio", "docker"]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
@@ -16,30 +21,16 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Check the generated files match
-        run: ./lint.sh
-
-  deploy-docker:
-    name: Build and publish docker containers
-    runs-on: ubuntu-latest
-    needs: [lint]
-    strategy:
-      matrix:
-        arch: [amd64, i386, armv7, aarch64]
-        build_type: ["hassio", "docker"]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - run: python3 gen.py
       - name: Set up env variables
         run: |
           tag="dev"
           if [[ "${{ matrix.build_type }}" == "hassio" ]]; then
             build_to="esphome/esphome-hassio-base-${{ matrix.arch }}"
-            dockerfile="${{ matrix.arch }}/Dockerfile.hassio"
+            dockerfile="build/${{ matrix.arch }}/Dockerfile.hassio"
           else
             build_to="esphome/esphome-base-${{ matrix.arch }}"
-            dockerfile="${{ matrix.arch }}/Dockerfile"
+            dockerfile="build/${{ matrix.arch }}/Dockerfile"
           fi
 
           # Set env variables so these values don't need to be calculated again

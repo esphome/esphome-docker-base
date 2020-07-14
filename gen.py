@@ -5,6 +5,7 @@ root_path = Path('.')
 hassio_template = root_path / 'template' / 'Dockerfile.hassio'
 docker_template = root_path / 'template' / 'Dockerfile'
 qemu_path = root_path / 'qemu'
+build_dir = root_path / 'build'
 
 patch_aarch64 = r""" \
     \
@@ -31,8 +32,8 @@ def replace_patch_aarch64(temp, arch):
 
 
 def gen_hassio(hassio_arch, base_arch, qemu_arch):
-    d = root_path / hassio_arch
-    d.mkdir(exist_ok=True)
+    d = build_dir / hassio_arch
+    d.mkdir(exist_ok=True, parents=True)
     temp = hassio_template.read_text()
     target = d / 'Dockerfile.hassio'
     temp = temp.replace('__HASSIO_ARCH__', hassio_arch)
@@ -60,8 +61,8 @@ for arch, base_arch, qemu_arch in HASSIO_ARCHS:
 
 
 def gen_docker(target_arch, docker_arch, qemu_arch):
-    d = root_path / target_arch
-    d.mkdir(exist_ok=True)
+    d = build_dir / target_arch
+    d.mkdir(exist_ok=True, parents=True)
     temp = docker_template.read_text()
     target = d / 'Dockerfile'
     temp = temp.replace('__DOCKER_ARCH__', docker_arch)
