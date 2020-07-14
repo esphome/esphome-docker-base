@@ -94,4 +94,4 @@ jobs:
           ${base}-amd64:${TAG} \
           ${base}-armv7:${TAG} \
           ${base}-i386:${TAG}
-        docker manifest push ${REPO}:${TAG}
+        docker manifest push ${base}:${TAG}

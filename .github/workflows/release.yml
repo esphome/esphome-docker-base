@@ -100,11 +100,11 @@ jobs:
           ${base}-amd64:${TAG} \
           ${base}-armv7:${TAG} \
           ${base}-i386:${TAG}
-        docker manifest push ${REPO}:${TAG}
+        docker manifest push ${base}:${TAG}
 
         docker manifest create ${base}:latest \
           ${base}-aarch64:latest \
           ${base}-amd64:latest \
           ${base}-armv7:latest \
           ${base}-i386:latest
-        docker manifest push ${REPO}:latest
+        docker manifest push ${base}:latest
