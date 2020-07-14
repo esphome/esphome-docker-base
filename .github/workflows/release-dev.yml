@@ -44,8 +44,6 @@ jobs:
           docker build \
             --tag "${IMAGE}" \
             --file "${DOCKERFILE}" \
-            --cache-from "${BUILD_TO}:latest" \
-            --cache-from "${BUILD_TO}:dev" \
             .
       - name: Log in to docker hub
         env:
@@ -72,8 +70,6 @@ jobs:
             --tag "esphome/esphome-lint-base:dev" \
             --file "Dockerfile.lint" \
             --build-arg BUILD_FROM=esphome/esphome-base-amd64:dev \
-            --cache-from "esphome/esphome-lint-base:latest" \
-            --cache-from "esphome/esphome-lint-base:dev" \
             .
       - name: Log in to docker hub
         env:

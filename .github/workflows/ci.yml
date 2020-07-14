@@ -38,6 +38,4 @@ jobs:
           docker build \
             --tag ci \
             --file "${DOCKERFILE}" \
-            --cache-from "${BUILD_TO}:latest" \
-            --cache-from "${BUILD_TO}:dev" \
             .

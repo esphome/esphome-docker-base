@@ -24,5 +24,5 @@ COPY platformio-lint.ini /opt/pio/platformio.ini
 RUN \
     # Build an empty platformio project to force platformio to install all fw build dependencies
     # The return-code will be non-zero since there's nothing to build.
-    && (platformio run -d /opt/pio; echo "Done") \
+    (platformio run -d /opt/pio; echo "Done") \
     && rm -rf /opt/pio/
