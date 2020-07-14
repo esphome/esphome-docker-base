@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+
+jobs:
+  build-docker:
+    name: Build and publish docker containers
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [amd64, i386, armv7, aarch64]
+        build_type: ["hassio", "docker"]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - run: python3 gen.py
+      - name: Set up env variables
+        run: |
+          if [[ "${{ matrix.build_type }}" == "hassio" ]]; then
+            build_to="esphome/esphome-hassio-base-${{ matrix.arch }}"
+            dockerfile="build/${{ matrix.arch }}/Dockerfile.hassio"
+          else
+            build_to="esphome/esphome-base-${{ matrix.arch }}"
+            dockerfile="build/${{ matrix.arch }}/Dockerfile"
+          fi
+
+          # Set env variables so these values don't need to be calculated again
+          echo "::set-env name=BUILD_TO::${build_to}"
+          echo "::set-env name=DOCKERFILE::${dockerfile}"
+      - name: Register QEMU binfmt
+        run: docker run --rm --privileged multiarch/qemu-user-static:5.0.0-2 --reset -p yes
+      - run: |
+          docker build \
+            --tag ci \
+            --file "${DOCKERFILE}" \
+            .

@@ -9,6 +9,7 @@ RUN \
         python3-pip \
         python3-setuptools \
         python3-pil \
+        python3-cryptography \
         iputils-ping \
         git \
         curl \
@@ -32,7 +33,7 @@ RUN \
     # Build an empty platformio project to force platformio to install all fw build dependencies
     # The return-code will be non-zero since there's nothing to build.
     && (platformio run -d /opt/pio; echo "Done") \
-    && rm -rf /opt/pio/__PATCH_AARCH64__
+    && rm -rf /opt/pio/
 
 VOLUME /config
 WORKDIR /usr/src/app
