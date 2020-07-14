@@ -21,9 +21,12 @@ jobs:
           python-version: '3.8'
 
       - run: python3 gen.py
+      - name: Set TAG
+        run: |
+          TAG="${GITHUB_SHA:0:7}"
+          echo "::set-env name=TAG::${TAG}"
       - name: Set up env variables
         run: |
-          tag="dev"
           if [[ "${{ matrix.build_type }}" == "hassio" ]]; then
             build_to="esphome/esphome-hassio-base-${{ matrix.arch }}"
             dockerfile="build/${{ matrix.arch }}/Dockerfile.hassio"
@@ -32,16 +35,14 @@ jobs:
             dockerfile="build/${{ matrix.arch }}/Dockerfile"
           fi
 
-          # Set env variables so these values don't need to be calculated again
-          echo "::set-env name=TAG::${tag}"
           echo "::set-env name=BUILD_TO::${build_to}"
-          echo "::set-env name=IMAGE::${build_to}:${tag}"
           echo "::set-env name=DOCKERFILE::${dockerfile}"
       - name: Register QEMU binfmt
         run: docker run --rm --privileged multiarch/qemu-user-static:5.0.0-2 --reset -p yes
       - run: |
           docker build \
-            --tag "${IMAGE}" \
+            --tag "${BUILD_TO}:${TAG}" \
+            --tag "${BUILD_TO}:dev" \
             --file "${DOCKERFILE}" \
             .
       - name: Log in to docker hub
@@ -49,7 +50,9 @@ jobs:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASSWORD}"
-      - run: docker push "${IMAGE}"
+      - run: |
+          docker push "${BUILD_TO}:${TAG}"
+          docker push "${BUILD_TO}:dev"
 
   deploy-lint:
     name: Build and publish lint docker container
@@ -62,20 +65,27 @@ jobs:
         with:
           python-version: '3.8'
 
+      - name: Set TAG
+        run: |
+          TAG="${GITHUB_SHA:0:7}"
+          echo "::set-env name=TAG::${TAG}"
       - name: Register QEMU binfmt
         run: docker run --rm --privileged multiarch/qemu-user-static:5.0.0-2 --reset -p yes
       - run: |
           docker build \
+            --tag "esphome/esphome-lint-base:${TAG}" \
             --tag "esphome/esphome-lint-base:dev" \
             --file "Dockerfile.lint" \
-            --build-arg BUILD_FROM=esphome/esphome-base-amd64:dev \
+            --build-arg "BUILD_FROM=esphome/esphome-base-amd64:${TAG}" \
             .
       - name: Log in to docker hub
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASSWORD}"
-      - run: docker push "esphome/esphome-lint-base:dev"
+      - run: |
+          docker push "esphome/esphome-lint-base:${TAG}"
+          docker push "esphome/esphome-lint-base:dev"
 
   deploy-docker-manifest:
     runs-on: ubuntu-latest
@@ -88,6 +98,10 @@ jobs:
       run: |
         mkdir -p ~/.docker
         echo "{\"experimental\": \"enabled\"}" > ~/.docker/config.json
+    - name: Set TAG
+      run: |
+        TAG="${GITHUB_SHA:0:7}"
+        echo "::set-env name=TAG::${TAG}"
     - name: Log in to docker hub
       env:
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
@@ -95,8 +109,6 @@ jobs:
       run: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASSWORD}"
     - name: "Create the manifest"
       run: |
-        TAG="dev"
-
         if [[ "${{ matrix.build_type }}" == "hassio" ]]; then
           base="esphome/esphome-hassio-base"
         else
@@ -109,3 +121,10 @@ jobs:
           ${base}-armv7:${TAG} \
           ${base}-i386:${TAG}
         docker manifest push ${base}:${TAG}
+
+        docker manifest create ${base}:dev \
+          ${base}-aarch64:${TAG} \
+          ${base}-amd64:${TAG} \
+          ${base}-armv7:${TAG} \
+          ${base}-i386:${TAG}
+        docker manifest push ${base}:dev
