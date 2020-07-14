@@ -1,0 +1,110 @@
+name: Publish Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Check the generated files match
+        run: |
+          python3 gen.py
+
+          if [[ ! git diff-index --quiet HEAD -- ]]; then
+            echo "The generated Dockerfiles don't match the template"
+            echo "Please update them"
+            exit 1
+          fi
+
+  deploy-docker:
+    name: Build and publish docker containers
+    runs-on: ubuntu-latest
+    needs: [lint]
+    strategy:
+      matrix:
+        arch: [amd64, i386, armv7, aarch64]
+        build_type: ["hassio", "docker"]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up env variables
+        run: |
+          tag="${GITHUB_REF#v}"
+          if [[ "${{ matrix.build_type }}" == "hassio" ]]; then
+            build_to="esphome/esphome-hassio-base-${{ matrix.arch }}"
+            dockerfile="${{ matrix.arch }}/Dockerfile.hassio"
+          else
+            build_to="esphome/esphome-base-${{ matrix.arch }}"
+            dockerfile="${{ matrix.arch }}/Dockerfile"
+          fi
+
+          # Set env variables so these values don't need to be calculated again
+          echo "::set-env name=TAG::${tag}"
+          echo "::set-env name=BUILD_TO::${build_to}"
+          echo "::set-env name=IMAGE::${build_to}:${tag}"
+          echo "::set-env name=DOCKERFILE::${dockerfile}"
+      - name: Register QEMU binfmt
+        run: docker run --rm --privileged multiarch/qemu-user-static:5.0.0-2 --reset -p yes
+      - run: |
+          docker build \
+            --tag "${IMAGE}" \
+            --file "${DOCKERFILE}" \
+            --cache-from "${BUILD_TO}:latest" \
+            --cache-from "${BUILD_TO}:dev" \
+            .
+      - name: Log in to docker hub
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASSWORD}"
+      - run: docker push "${IMAGE}"
+      - run: |
+          docker tag "${IMAGE}" "${BUILD_TO}:latest"
+          docker push "${BUILD_TO}:latest"
+
+  deploy-docker-manifest:
+    runs-on: ubuntu-latest
+    needs: [deploy-docker]
+    strategy:
+      matrix:
+        build_type: ["hassio", "docker"]
+    steps:
+    - name: Enable experimental manifest support
+      run: |
+        mkdir -p ~/.docker
+        echo "{\"experimental\": \"enabled\"}" > ~/.docker/config.json
+    - name: Log in to docker hub
+      env:
+        DOCKER_USER: ${{ secrets.DOCKER_USER }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASSWORD}"
+    - name: "Create the manifest"
+      run: |
+        TAG="dev"
+
+        if [[ "${{ matrix.build_type }}" == "hassio" ]]; then
+          base="esphome/esphome-hassio-base"
+        else
+          base="esphome/esphome-base"
+        fi
+
+        docker manifest create ${base}:${TAG} \
+          ${base}-aarch64:${TAG} \
+          ${base}-amd64:${TAG} \
+          ${base}-armv7:${TAG} \
+          ${base}-i386:${TAG}
+        docker manifest push ${REPO}:${TAG}
+
+        docker manifest create ${base}:latest \
+          ${base}-aarch64:latest \
+          ${base}-amd64:latest \
+          ${base}-armv7:latest \
+          ${base}-i386:latest
+        docker manifest push ${REPO}:latest
