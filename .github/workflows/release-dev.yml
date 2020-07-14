@@ -37,12 +37,18 @@ jobs:
 
           echo "::set-env name=BUILD_TO::${build_to}"
           echo "::set-env name=DOCKERFILE::${dockerfile}"
+      - name: Pull for cache
+        run: |
+          docker pull "${BUILD_TO}:latest" || true
+          docker pull "${BUILD_TO}:dev" || true
       - name: Register QEMU binfmt
         run: docker run --rm --privileged multiarch/qemu-user-static:5.0.0-2 --reset -p yes
       - run: |
           docker build \
             --tag "${BUILD_TO}:${TAG}" \
             --tag "${BUILD_TO}:dev" \
+            --cache-from "${BUILD_TO}:latest" \
+            --cache-from "${BUILD_TO}:dev" \
             --file "${DOCKERFILE}" \
             .
       - name: Log in to docker hub
@@ -69,13 +75,23 @@ jobs:
         run: |
           TAG="${GITHUB_SHA:0:7}"
           echo "::set-env name=TAG::${TAG}"
+      - name: Set up env variables
+        run: |
+          echo "::set-env name=BUILD_TO::esphome/esphome-lint-base"
+          echo "::set-env name=DOCKERFILE::Dockerfile.lint"
+      - name: Pull for cache
+        run: |
+          docker pull "${BUILD_TO}:latest" || true
+          docker pull "${BUILD_TO}:dev" || true
       - name: Register QEMU binfmt
         run: docker run --rm --privileged multiarch/qemu-user-static:5.0.0-2 --reset -p yes
       - run: |
           docker build \
-            --tag "esphome/esphome-lint-base:${TAG}" \
-            --tag "esphome/esphome-lint-base:dev" \
-            --file "Dockerfile.lint" \
+            --tag "${BUILD_TO}:${TAG}" \
+            --tag "${BUILD_TO}:dev" \
+            --cache-from "${BUILD_TO}:latest" \
+            --cache-from "${BUILD_TO}:dev" \
+            --file "${DOCKERFILE}" \
             --build-arg "BUILD_FROM=esphome/esphome-base-amd64:${TAG}" \
             .
       - name: Log in to docker hub
@@ -84,8 +100,8 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASSWORD}"
       - run: |
-          docker push "esphome/esphome-lint-base:${TAG}"
-          docker push "esphome/esphome-lint-base:dev"
+          docker push "${BUILD_TO}:${TAG}"
+          docker push "${BUILD_TO}:dev"
 
   deploy-docker-manifest:
     runs-on: ubuntu-latest

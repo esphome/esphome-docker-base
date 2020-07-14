@@ -36,12 +36,18 @@ jobs:
 
           echo "::set-env name=BUILD_TO::${build_to}"
           echo "::set-env name=DOCKERFILE::${dockerfile}"
+      - name: Pull for cache
+        run: |
+          docker pull "${BUILD_TO}:latest" || true
+          docker pull "${BUILD_TO}:dev" || true
       - name: Register QEMU binfmt
         run: docker run --rm --privileged multiarch/qemu-user-static:5.0.0-2 --reset -p yes
       - run: |
           docker build \
             --tag "${BUILD_TO}:${TAG}" \
             --tag "${BUILD_TO}:latest" \
+            --cache-from "${BUILD_TO}:latest" \
+            --cache-from "${BUILD_TO}:dev" \
             --file "${DOCKERFILE}" \
             .
       - name: Log in to docker hub
@@ -70,12 +76,22 @@ jobs:
         run: |
           TAG="${GITHUB_REF#refs/tags/v}"
           echo "::set-env name=TAG::${TAG}"
+      - name: Set up env variables
+        run: |
+          echo "::set-env name=BUILD_TO::esphome/esphome-lint-base"
+          echo "::set-env name=DOCKERFILE::Dockerfile.lint"
+      - name: Pull for cache
+        run: |
+          docker pull "${BUILD_TO}:latest" || true
+          docker pull "${BUILD_TO}:dev" || true
       - run: |
           docker build \
-            --tag "esphome/esphome-lint-base:${TAG}" \
-            --tag "esphome/esphome-lint-base:latest" \
-            --file "Dockerfile.lint" \
-            --build-arg BUILD_FROM=esphome/esphome-base-amd64:latest \
+            --tag "${BUILD_TO}:${TAG}" \
+            --tag "${BUILD_TO}:latest" \
+            --cache-from "${BUILD_TO}:latest" \
+            --cache-from "${BUILD_TO}:dev" \
+            --file "${DOCKERFILE}" \
+            --build-arg "BUILD_FROM=esphome/esphome-base-amd64:${TAG}" \
             .
       - name: Log in to docker hub
         env:

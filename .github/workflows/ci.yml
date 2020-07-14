@@ -22,15 +22,24 @@ jobs:
       - name: Set up env variables
         run: |
           if [[ "${{ matrix.build_type }}" == "hassio" ]]; then
+            build_to="esphome/esphome-hassio-base-${{ matrix.arch }}"
             dockerfile="build/${{ matrix.arch }}/Dockerfile.hassio"
           else
+            build_to="esphome/esphome-base-${{ matrix.arch }}"
             dockerfile="build/${{ matrix.arch }}/Dockerfile"
           fi
 
+          echo "::set-env name=BUILD_TO::${build_to}"
           echo "::set-env name=DOCKERFILE::${dockerfile}"
+      - name: Pull for cache
+        run: |
+          docker pull "${BUILD_TO}:latest" || true
+          docker pull "${BUILD_TO}:dev" || true
       - name: Register QEMU binfmt
         run: docker run --rm --privileged multiarch/qemu-user-static:5.0.0-2 --reset -p yes
       - run: |
           docker build \
             --file "${DOCKERFILE}" \
+            --cache-from "${BUILD_TO}:latest" \
+            --cache-from "${BUILD_TO}:dev" \
             .
