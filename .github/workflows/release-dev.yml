@@ -17,14 +17,7 @@ jobs:
           python-version: '3.8'
 
       - name: Check the generated files match
-        run: |
-          python3 gen.py
-
-          if ! git diff-index --quiet HEAD --; then
-            echo "The generated Dockerfiles don't match the template"
-            echo "Please update them"
-            exit 1
-          fi
+        run: ./lint.sh
 
   deploy-docker:
     name: Build and publish docker containers
