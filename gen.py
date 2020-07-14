@@ -7,29 +7,6 @@ docker_template = root_path / 'template' / 'Dockerfile'
 qemu_path = root_path / 'qemu'
 build_dir = root_path / 'build'
 
-patch_aarch64 = r""" \
-    \
-    && rm -rf /root/.platformio/packages/toolchain-xtensa32 \
-    && curl -sSL -o /toolchain-xtensa32.tar.gz \
-         https://github.com/esphome/esphome-docker-base/releases/download/v1.4.0/toolchain-xtensa32.tar.gz \
-    && tar -xzf /toolchain-xtensa32.tar.gz -C /root/.platformio/packages/ \
-    && rm /toolchain-xtensa32.tar.gz \
-    \
-    && rm -rf /root/.platformio/packages/toolchain-xtensa@1.40802.2 \
-    && mkdir /root/.platformio/packages/toolchain-xtensa@1.40802.2 \
-    && curl -sSL -o /toolchain-xtensa.tar.gz \
-         https://github.com/esphome/esphome-docker-base/releases/download/v1.4.0/toolchain-xtensa.tar.gz \
-    && tar -xzf /toolchain-xtensa.tar.gz --strip-components=1 -C /root/.platformio/packages/toolchain-xtensa@1.40802.2 \
-    && rm /toolchain-xtensa.tar.gz
-"""
-
-
-def replace_patch_aarch64(temp, arch):
-    if arch == 'aarch64':
-        return temp.replace('__PATCH_AARCH64__', patch_aarch64)
-    else:
-        return temp.replace('__PATCH_AARCH64__', '')
-
 
 def gen_hassio(hassio_arch, base_arch, qemu_arch):
     d = build_dir / hassio_arch
@@ -38,7 +15,6 @@ def gen_hassio(hassio_arch, base_arch, qemu_arch):
     target = d / 'Dockerfile.hassio'
     temp = temp.replace('__HASSIO_ARCH__', hassio_arch)
     temp = temp.replace('__UBUNTU_BASE_ARCH__', base_arch)
-    temp = replace_patch_aarch64(temp, hassio_arch)
     if qemu_arch is None:
         temp = temp.replace('__COPY_QEMU__', '')
     else:
@@ -66,7 +42,6 @@ def gen_docker(target_arch, docker_arch, qemu_arch):
     temp = docker_template.read_text()
     target = d / 'Dockerfile'
     temp = temp.replace('__DOCKER_ARCH__', docker_arch)
-    temp = replace_patch_aarch64(temp, target_arch)
     if qemu_arch is None:
         temp = temp.replace('__COPY_QEMU__', '')
     else:
