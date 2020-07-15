@@ -14,7 +14,7 @@ def gen_hassio(hassio_arch, base_arch, qemu_arch):
     temp = hassio_template.read_text()
     target = d / 'Dockerfile.hassio'
     temp = temp.replace('__HASSIO_ARCH__', hassio_arch)
-    temp = temp.replace('__DEBIAN_BASE_ARCH__', base_arch)
+    temp = temp.replace('__UBUNTU_BASE_ARCH__', base_arch)
     if qemu_arch is None:
         temp = temp.replace('__COPY_QEMU__', '')
     else:
