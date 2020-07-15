@@ -56,3 +56,31 @@ apt update
 PKG=...
 apt-cache show $PKG | grep 'Version: ' | sed -E 's/Version: (.*)/\1/' | head -1
 ```
+
+Full script:
+
+```bash
+# Run in `docker run -it --rm debian:latest`
+function print_pkg() {
+    ver=$(apt-cache show $1 | grep 'Version: ' | sed -E 's/Version: (.*)/\1/' | head -1)
+    echo "        $1=${ver} \\"
+}
+
+echo "Dockerfile:"
+for pkg in python3 python3-pip python3-setuptools python3-pil python3-cryptography iputils-ping git curl; do
+    print_pkg $pkg
+done
+echo
+
+echo "Dockerfile.hassio:"
+for pkg in python3 python3-pip python3-setuptools python3-pil python3-cryptography iputils-ping git curl nginx; do
+    print_pkg $pkg
+done
+echo
+
+echo "Dockerfile.lint:"
+for pkg in clang-format-7 clang-tidy-7 patch; do
+    print_pkg $pkg
+done
+echo
+```

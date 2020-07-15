@@ -5,15 +5,9 @@ RUN \
     apt-get update \
     # Use pinned versions so that we get updates with build caching
     && apt-get install -y --no-install-recommends \
-        clang-format-7=1:7-3~ubuntu0.18.04.1 \
-        clang-tidy-7=1:7-3~ubuntu0.18.04.1 \
-        patch=2.7.6-2ubuntu1.1 \
-        software-properties-common=0.96.24.32.13 \
-    # Update to latest git version because of github actions
-    # https://github.com/actions/checkout/issues/126
-    && apt-add-repository ppa:git-core/ppa \
-    && apt-get install -y --no-install-recommends \
-        git=1:2.27.0-1~ppa0~ubuntu18.04.1 \
+        clang-format-7=1:7.0.1-8 \
+        clang-tidy-7=1:7.0.1-8 \
+        patch=2.7.6-3+deb10u1 \
     && rm -rf \
         /tmp/* \
         /var/{cache,log}/* \
