@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [amd64, i386, armv7, aarch64]
+        arch: [amd64, armv7, aarch64]
         build_type: ["hassio", "docker"]
     steps:
       - uses: actions/checkout@v2

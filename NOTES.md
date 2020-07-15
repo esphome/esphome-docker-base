@@ -14,12 +14,10 @@ because `arm64v8/ubuntu` focal fossa builds are not working.
 The following docker images are built by this repository:
 
  - `esphome/esphome-base-amd64`
- - `esphome/esphome-base-i386`
  - `esphome/esphome-base-armv7`
  - `esphome/esphome-base-aarch64`
  - `esphome/esphome-base` (manifest)
  - `esphome/esphome-hassio-base-amd64`
- - `esphome/esphome-hassio-base-i386`
  - `esphome/esphome-hassio-base-armv7`
  - `esphome/esphome-hassio-base-aarch64`
  - `esphome/esphome-hassio-base` (manifest)

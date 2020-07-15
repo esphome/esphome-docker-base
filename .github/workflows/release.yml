@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [amd64, i386, armv7, aarch64]
+        arch: [amd64, armv7, aarch64]
         build_type: ["hassio", "docker"]
     steps:
       - uses: actions/checkout@v2
@@ -134,13 +134,11 @@ jobs:
         docker manifest create ${base}:${TAG} \
           ${base}-aarch64:${TAG} \
           ${base}-amd64:${TAG} \
-          ${base}-armv7:${TAG} \
-          ${base}-i386:${TAG}
+          ${base}-armv7:${TAG}
         docker manifest push ${base}:${TAG}
 
         docker manifest create ${base}:latest \
           ${base}-aarch64:${TAG} \
           ${base}-amd64:${TAG} \
-          ${base}-armv7:${TAG} \
-          ${base}-i386:${TAG}
+          ${base}-armv7:${TAG}
         docker manifest push ${base}:latest

@@ -28,7 +28,6 @@ def gen_hassio(hassio_arch, base_arch, qemu_arch):
 
 HASSIO_ARCHS = [
     ('amd64', 'amd64', None),
-    ('i386', 'i386', None),
     ('armv7', 'armv7', 'arm'),
     ('aarch64', 'aarch64', 'aarch64'),
 ]
@@ -55,7 +54,6 @@ def gen_docker(target_arch, docker_arch, qemu_arch):
 
 DOCKER_ARCHS = [
     ('amd64', 'amd64', None),
-    ('i386', 'i386', None),
     ('armv7', 'arm32v7', 'arm'),
     ('aarch64', 'arm64v8', 'aarch64'),
 ]
