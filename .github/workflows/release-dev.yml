@@ -39,7 +39,6 @@ jobs:
           echo "::set-env name=DOCKERFILE::${dockerfile}"
       - name: Pull for cache
         run: |
-          docker pull "${BUILD_TO}:latest" || true
           docker pull "${BUILD_TO}:dev" || true
       - name: Register QEMU binfmt
         run: docker run --rm --privileged multiarch/qemu-user-static:5.0.0-2 --reset -p yes
@@ -47,7 +46,6 @@ jobs:
           docker build \
             --tag "${BUILD_TO}:${TAG}" \
             --tag "${BUILD_TO}:dev" \
-            --cache-from "${BUILD_TO}:latest" \
             --cache-from "${BUILD_TO}:dev" \
             --file "${DOCKERFILE}" \
             .
@@ -81,7 +79,6 @@ jobs:
           echo "::set-env name=DOCKERFILE::Dockerfile.lint"
       - name: Pull for cache
         run: |
-          docker pull "${BUILD_TO}:latest" || true
           docker pull "${BUILD_TO}:dev" || true
       - name: Register QEMU binfmt
         run: docker run --rm --privileged multiarch/qemu-user-static:5.0.0-2 --reset -p yes
@@ -89,7 +86,6 @@ jobs:
           docker build \
             --tag "${BUILD_TO}:${TAG}" \
             --tag "${BUILD_TO}:dev" \
-            --cache-from "${BUILD_TO}:latest" \
             --cache-from "${BUILD_TO}:dev" \
             --file "${DOCKERFILE}" \
             --build-arg "BUILD_FROM=esphome/esphome-base-amd64:${TAG}" \
