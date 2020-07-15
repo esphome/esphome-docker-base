@@ -35,7 +35,8 @@ RUN \
     && platformio settings set check_platforms_interval 1000000 \
     # Build an empty platformio project to force platformio to install all fw build dependencies
     # The return-code will be non-zero since there's nothing to build.
-    && (platformio run -d /opt/pio; echo "Done") \
+    # Use upload target so that packages required for uploading also get installed
+    && (platformio run -d /opt/pio -t upload; echo "Done") \
     && rm -rf /opt/pio/
 
 VOLUME /config
