@@ -1,4 +1,4 @@
-FROM __DOCKER_ARCH__/focal-20200720
+FROM __DOCKER_ARCH__/ubuntu:focal-20200720
 
 __COPY_QEMU__
 
