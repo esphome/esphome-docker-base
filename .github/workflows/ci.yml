@@ -61,9 +61,11 @@ jobs:
           docker build \
             --file "build/amd64/Dockerfile" \
             --cache-from "esphome/esphome-base-amd64:dev" \
+            --tag temp \
             .
       - run: |
           docker build \
             --file Dockerfile.lint \
             --cache-from "esphome/esphome-lint-base:dev" \
+            --build-arg "BUILD_FROM=temp" \
             .
