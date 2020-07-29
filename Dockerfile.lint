@@ -13,7 +13,7 @@ RUN \
     # https://github.com/actions/checkout/issues/126
     && apt-add-repository ppa:git-core/ppa \
     && apt-get install -y --no-install-recommends \
-        git=1:2.17.0-1ubuntu1 \
+        git \
     && rm -rf \
         /tmp/* \
         /var/{cache,log}/* \
