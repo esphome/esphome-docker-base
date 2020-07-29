@@ -8,12 +8,6 @@ RUN \
         clang-format-7=1:7.0.1-12 \
         clang-tidy-7=1:7.0.1-12 \
         patch=2.7.6-6 \
-        software-properties-common=0.98.9.1 \
-    # Update to latest git version because of github actions
-    # https://github.com/actions/checkout/issues/126
-    && apt-add-repository ppa:git-core/ppa \
-    && apt-get install -y --no-install-recommends \
-        git \
     && rm -rf \
         /tmp/* \
         /var/{cache,log}/* \
