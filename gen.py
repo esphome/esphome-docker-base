@@ -46,5 +46,5 @@ DOCKER_ARCHS = [
     ('aarch64', 'arm64v8'),
 ]
 
-for t, d, q in DOCKER_ARCHS:
-    gen_docker(t, d, q)
+for t, d in DOCKER_ARCHS:
+    gen_docker(t, d)
