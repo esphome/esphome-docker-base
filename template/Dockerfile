@@ -1,7 +1,5 @@
 FROM __DOCKER_ARCH__/ubuntu:focal-20200720
 
-__COPY_QEMU__
-
 # Environment variables
 ENV \
     DEBIAN_FRONTEND="noninteractive" \
