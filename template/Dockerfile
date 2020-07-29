@@ -1,7 +1,5 @@
 FROM __DOCKER_ARCH__/ubuntu:bionic-20200713
 
-__COPY_QEMU__
-
 RUN \
     apt-get update \
     # Use pinned versions so that we get updates with build caching
