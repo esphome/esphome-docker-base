@@ -2,6 +2,15 @@ FROM __DOCKER_ARCH__/ubuntu:focal-20200720
 
 __COPY_QEMU__
 
+# Environment variables
+ENV \
+    DEBIAN_FRONTEND="noninteractive" \
+    HOME="/root" \
+    TERM="xterm-256color" \
+    # Fix click python3 lang warning https://click.palletsprojects.com/en/7.x/python3/
+    LANG="C.UTF-8" \
+    LC_ALL="C.UTF-8"
+
 RUN \
     apt-get update \
     # Use pinned versions so that we get updates with build caching
@@ -18,9 +27,6 @@ RUN \
         /tmp/* \
         /var/{cache,log}/* \
         /var/lib/apt/lists/*
-
-# Fix click python3 lang warning https://click.palletsprojects.com/en/7.x/python3/
-ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 COPY platformio.ini /opt/pio/
 
