@@ -1,4 +1,4 @@
-FROM __DOCKER_ARCH__/ubuntu:bionic-20200630
+FROM __DOCKER_ARCH__/focal-20200720
 
 __COPY_QEMU__
 
@@ -6,14 +6,14 @@ RUN \
     apt-get update \
     # Use pinned versions so that we get updates with build caching
     && apt-get install -y --no-install-recommends \
-        python3=3.6.7-1~18.04 \
-        python3-pip=9.0.1-2.3~ubuntu1.18.04.1 \
-        python3-setuptools=39.0.1-2 \
-        python3-pil=5.1.0-1ubuntu0.2 \
-        python3-cryptography=2.1.4-1ubuntu1.3 \
-        iputils-ping=3:20161105-1ubuntu3 \
-        git=1:2.17.1-1ubuntu0.7 \
-        curl=7.58.0-2ubuntu3.9 \
+        python3=3.8.2-0ubuntu2 \
+        python3-pip=20.0.2-5ubuntu1 \
+        python3-setuptools=45.2.0-1 \
+        python3-pil=7.0.0-4ubuntu0.1 \
+        python3-cryptography=2.8-3 \
+        iputils-ping=3:20190709-3 \
+        git=1:2.25.1-1ubuntu3 \
+        curl=7.68.0-1ubuntu2.1 \
     && rm -rf \
         /tmp/* \
         /var/{cache,log}/* \
