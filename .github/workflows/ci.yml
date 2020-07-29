@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-docker:
-    name: Build and publish docker containers
+    name: Build docker containers
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -40,4 +40,30 @@ jobs:
           docker build \
             --file "${DOCKERFILE}" \
             --cache-from "${BUILD_TO}:dev" \
+            .
+
+  build-docker-lint:
+    name: Build docker lint container
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - run: python3 gen.py
+      - name: Pull for cache
+        run: |
+          docker pull "esphome/esphome-base-amd64:dev" || true
+          docker pull "esphome/esphome-lint-base:dev" || true
+      - run: |
+          docker build \
+            --file "build/amd64/Dockerfile" \
+            --cache-from "esphome/esphome-base-amd64:dev" \
+            .
+      - run: |
+          docker build \
+            --file Dockerfile.lint \
+            --cache-from "esphome/esphome-lint-base:dev" \
             .
