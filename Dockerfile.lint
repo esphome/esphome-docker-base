@@ -8,7 +8,7 @@ RUN \
         clang-format-7=1:7-3~ubuntu0.18.04.1 \
         clang-tidy-7=1:7-3~ubuntu0.18.04.1 \
         patch=2.7.6-2ubuntu1.1 \
-        software-properties-common=0.96.24.32.13 \
+        software-properties-common=0.96.24.32.14 \
     # Update to latest git version because of github actions
     # https://github.com/actions/checkout/issues/126
     && apt-add-repository ppa:git-core/ppa \
