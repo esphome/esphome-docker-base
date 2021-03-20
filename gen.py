@@ -8,25 +8,24 @@ qemu_path = root_path / 'qemu'
 build_dir = root_path / 'build'
 
 
-def gen_hassio(hassio_arch, base_arch):
+def gen_hassio(hassio_arch):
     d = build_dir / hassio_arch
     d.mkdir(exist_ok=True, parents=True)
     temp = hassio_template.read_text()
     target = d / 'Dockerfile.hassio'
     temp = temp.replace('__HASSIO_ARCH__', hassio_arch)
-    temp = temp.replace('__UBUNTU_BASE_ARCH__', base_arch)
     temp = "# This is an auto-generated file, please edit template/Dockerfile.hassio!\n" + temp
     print("Generating {}".format(target))
     target.write_text(temp)
 
 
 HASSIO_ARCHS = [
-    ('amd64', 'amd64'),
-    ('armv7', 'armv7'),
-    ('aarch64', 'aarch64'),
+    'amd64',
+    'armv7',
+    'aarch64',
 ]
-for arch, base_arch in HASSIO_ARCHS:
-    gen_hassio(arch, base_arch)
+for arch in HASSIO_ARCHS:
+    gen_hassio(arch)
 
 
 def gen_docker(target_arch, docker_arch):

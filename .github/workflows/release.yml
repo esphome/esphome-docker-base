@@ -40,7 +40,7 @@ jobs:
         run: |
           docker pull "${BUILD_TO}:latest" || true
       - name: Register QEMU binfmt
-        run: docker run --rm --privileged multiarch/qemu-user-static:5.0.0-2 --reset -p yes
+        run: docker run --rm --privileged multiarch/qemu-user-static:5.2.0-2 --reset -p yes
       - run: |
           docker build \
             --tag "${BUILD_TO}:${TAG}" \
@@ -69,7 +69,7 @@ jobs:
           python-version: '3.8'
 
       - name: Register QEMU binfmt
-        run: docker run --rm --privileged multiarch/qemu-user-static:5.0.0-2 --reset -p yes
+        run: docker run --rm --privileged multiarch/qemu-user-static:5.2.0-2 --reset -p yes
       - name: Set TAG
         run: |
           TAG="${GITHUB_REF#refs/tags/v}"
