@@ -41,7 +41,7 @@ jobs:
         run: |
           docker pull "${BUILD_TO}:dev" || true
       - name: Register QEMU binfmt
-        run: docker run --rm --privileged multiarch/qemu-user-static:5.0.0-2 --reset -p yes
+        run: docker run --rm --privileged multiarch/qemu-user-static:5.2.0-2 --reset -p yes
       - run: |
           docker build \
             --tag "${BUILD_TO}:${TAG}" \
@@ -81,7 +81,7 @@ jobs:
         run: |
           docker pull "${BUILD_TO}:dev" || true
       - name: Register QEMU binfmt
-        run: docker run --rm --privileged multiarch/qemu-user-static:5.0.0-2 --reset -p yes
+        run: docker run --rm --privileged multiarch/qemu-user-static:5.2.0-2 --reset -p yes
       - run: |
           docker build \
             --tag "${BUILD_TO}:${TAG}" \
