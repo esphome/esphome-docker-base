@@ -29,8 +29,8 @@ jobs:
             dockerfile="build/${{ matrix.arch }}/Dockerfile"
           fi
 
-          echo "::set-env name=BUILD_TO::${build_to}"
-          echo "::set-env name=DOCKERFILE::${dockerfile}"
+          echo "name=BUILD_TO::${build_to}" >>$GITHUB_ENV
+          echo "name=DOCKERFILE::${dockerfile}" >>$GITHUB_ENV
       - name: Pull for cache
         run: |
           docker pull "${BUILD_TO}:dev" || true
