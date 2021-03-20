@@ -24,7 +24,7 @@ jobs:
       - name: Set TAG
         run: |
           TAG="${GITHUB_SHA:0:7}"
-          echo "::set-env name=TAG::${TAG}"
+          echo "TAG=${TAG}" >>$GITHUB_ENV
       - name: Set up env variables
         run: |
           if [[ "${{ matrix.build_type }}" == "hassio" ]]; then
@@ -35,8 +35,8 @@ jobs:
             dockerfile="build/${{ matrix.arch }}/Dockerfile"
           fi
 
-          echo "::set-env name=BUILD_TO::${build_to}"
-          echo "::set-env name=DOCKERFILE::${dockerfile}"
+          echo "BUILD_TO=${build_to}" >>$GITHUB_ENV
+          echo "DOCKERFILE=${dockerfile}" >>$GITHUB_ENV
       - name: Pull for cache
         run: |
           docker pull "${BUILD_TO}:dev" || true
@@ -72,11 +72,11 @@ jobs:
       - name: Set TAG
         run: |
           TAG="${GITHUB_SHA:0:7}"
-          echo "::set-env name=TAG::${TAG}"
+          echo "TAG=${TAG}" >>$GITHUB_ENV
       - name: Set up env variables
         run: |
-          echo "::set-env name=BUILD_TO::esphome/esphome-lint-base"
-          echo "::set-env name=DOCKERFILE::Dockerfile.lint"
+          echo "BUILD_TO=esphome/esphome-lint-base" >>$GITHUB_ENV
+          echo "DOCKERFILE=Dockerfile.lint" >>$GITHUB_ENV
       - name: Pull for cache
         run: |
           docker pull "${BUILD_TO}:dev" || true
@@ -113,7 +113,7 @@ jobs:
     - name: Set TAG
       run: |
         TAG="${GITHUB_SHA:0:7}"
-        echo "::set-env name=TAG::${TAG}"
+        echo "TAG=${TAG}" >>$GITHUB_ENV
     - name: Log in to docker hub
       env:
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
