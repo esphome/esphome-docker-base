@@ -1,4 +1,4 @@
-FROM __DOCKER_ARCH__/debian:buster-20210329-slim
+FROM __DOCKER_ARCH__/debian:buster-20210511-slim
 
 RUN \
     apt-get update \

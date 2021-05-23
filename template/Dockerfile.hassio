@@ -1,4 +1,4 @@
-FROM ghcr.io/hassio-addons/debian-base/__HASSIO_ARCH__:4.1.4
+FROM ghcr.io/hassio-addons/debian-base/__HASSIO_ARCH__:4.2.1
 
 # Set shell
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
