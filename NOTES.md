@@ -5,11 +5,11 @@ all base tools that ESPHome expects as well as platformio
 packages for ESP32/ESP8266.
 
 Additionally all packages that can't be easily installed with `pip`
-on all platforms but for which an ubuntu apt package exists,
-the base images are also used.
+on all platforms but for which a Debian package exists, the base
+images are also used.
 
-The base image builds on top of `ubuntu:bionic` LTS and not focal fossa
-because `arm64v8/ubuntu` focal fossa builds are not working.
+The base image builds on top of `debian:buster` (changed from Ubuntu
+see #16).
 
 The following docker images are built by this repository:
 
@@ -31,12 +31,18 @@ Docker hub. For example for tag `v2.3.2` the images `esphome/esphome-base-amd64:
 
 Next the base image value has to be updated in a couple of places:
 
+ - `esphome/.github/workflows/ci-docker.yml`: `base_version=[...]`
  - `esphome/.github/workflows/release-dev.yml`: `base_version=[...]`
  - `esphome/.github/workflows/release.yml`: `base_version=[...]`
  - `esphome/docker/Dockerfile`: `ARG BUILD_FROM=...`
  - `esphome/docker/Dockerfile.dev`: `ARG BUILD_FROM=...`
  - `esphome/docker/Dockerfile.lint`: `ARG BUILD_FROM=...`
- - `hassio/template/config.yaml`: `base_image: [...]`
+ - `hassio/template/addon_config.yaml`: `base_image: [...]`
+
+The helper script `esphome/script/bump-docker-base-version.py` bumps
+all versions in the esphome repository. The base image value in the
+hassio repository is used by the Development version add-on. Run the
+`hassio/script/generate.py` with the argument `dev` after bumping.
 
 ## Caching & Dependency Pinning
 
