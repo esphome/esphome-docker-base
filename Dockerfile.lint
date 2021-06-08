@@ -13,6 +13,7 @@ RUN \
         clang-tidy-11=1:11.0.1-2~bpo10+1 \
         patch=2.7.6-3+deb10u1 \
         software-properties-common=0.96.20.2-2 \
+        nano=3.2-3 \
     && rm -rf \
         /tmp/* \
         /var/{cache,log}/* \
