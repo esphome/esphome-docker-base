@@ -15,7 +15,7 @@ RUN \
         iputils-ping=3:20180629-2+deb10u2 \
         git=1:2.20.1-2+deb10u3 \
         curl=7.64.0-4+deb10u2 \
-        nginx=1.14.2-2+deb10u3 \
+        nginx=1.14.2-2+deb10u4 \
     && rm -rf \
         /tmp/* \
         /var/{cache,log}/* \

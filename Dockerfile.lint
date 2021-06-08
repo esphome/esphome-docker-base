@@ -9,6 +9,8 @@ RUN \
     apt-get update \
     # Use pinned versions so that we get updates with build caching
     && apt-get install -y --no-install-recommends \
+        clang-format-7=1:7.0.1-8+deb10u2 \
+        clang-tidy-7=1:7.0.1-8+deb10u2 \
         clang-format-11=1:11.0.1-2~bpo10+1 \
         clang-tidy-11=1:11.0.1-2~bpo10+1 \
         patch=2.7.6-3+deb10u1 \
