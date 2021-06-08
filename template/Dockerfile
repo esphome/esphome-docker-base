@@ -7,6 +7,7 @@ RUN \
         python3=3.7.3-1 \
         python3-pip=18.1-5 \
         python3-setuptools=40.8.0-1 \
+        python3-pil=5.4.1-2+deb10u2 \
         python3-cryptography=2.6.1-3+deb10u2 \
         iputils-ping=3:20180629-2+deb10u2 \
         git=1:2.20.1-2+deb10u3 \
