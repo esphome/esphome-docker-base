@@ -10,8 +10,8 @@ RUN \
         python3-pil=5.4.1-2+deb10u2 \
         python3-cryptography=2.6.1-3+deb10u2 \
         iputils-ping=3:20180629-2+deb10u2 \
-        git=1:2.20.1-2+deb10u3 \
-        curl=7.64.0-4+deb10u2 \
+        git=1:2.30.2-1~bpo10+1 \
+        curl=7.74.0-1.2~bpo10+1 \
     && rm -rf \
         /tmp/* \
         /var/{cache,log}/* \
