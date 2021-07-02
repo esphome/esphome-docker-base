@@ -3,7 +3,7 @@ name: Publish dev releases to docker hub
 on:
   push:
     branches:
-    - master
+    - main
 
 jobs:
   deploy-docker:
