@@ -142,6 +142,7 @@ def main():
     elif args.command == "push":
         params = DockerParams.for_type_arch_tag(args.build_type, args.arch, args.tag)
         imgs = [f"{params.build_to}:{tag}" for tag in tags_to_push]
+        imgs += [f"ghcr.io/{params.build_to}:{tag}" for tag in tags_to_push]
         src = imgs[0]
         # 1. tag images
         for img in imgs[1:]:
@@ -157,6 +158,7 @@ def main():
         manifest = DockerParams.for_type_arch_tag(args.build_type, ARCH_AMD64, args.tag).manifest_to
 
         targets = [f"{manifest}:{tag}" for tag in tags_to_push]
+        targets += [f"ghcr.io/{manifest}:{tag}" for tag in tags_to_push]
         # 1. Create manifests
         for target in targets:
             cmd = ["docker", "manifest", "create", target] + [
