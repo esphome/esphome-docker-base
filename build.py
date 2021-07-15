@@ -24,7 +24,7 @@ TYPES = [TYPE_DOCKER, TYPE_HA_ADDON, TYPE_LINT]
 
 BASE_IMAGES = {
     TYPE_DOCKER: "{docker_arch}/debian:buster-20210511-slim",
-    TYPE_HA_ADDON: "{arch}/debian:buster-20210511-slim",
+    TYPE_HA_ADDON: "ghcr.io/hassio-addons/debian-base/{arch}:4.2.1",
     TYPE_LINT: "esphome/esphome-base-{arch}:{tag}",
 }
 
