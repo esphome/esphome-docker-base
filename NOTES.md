@@ -58,7 +58,7 @@ apt update
 PKG=...
 apt-cache show $PKG | grep 'Version: ' | sed -E 's/Version: (.*)/\1/' | head -1
 
-for PKG in python3 python3-pip python3-setuptools python3-pil python3-cryptography iputils-ping git curl nginx clang-format-7 clang-tidy-7 clang-format-11 clang-tidy-11 patch software-properties-common nano; do
+for PKG in python3 python3-pip python3-setuptools python3-pil python3-cryptography iputils-ping git curl nginx clang-format-7 clang-tidy-7 clang-format-11 clang-tidy-11 patch software-properties-common nano build-essential python3-dev; do
   vers=$(apt-cache show $PKG | grep 'Version: ' | sed -E 's/Version: (.*)/\1/' | head -1)
   echo "        $PKG=$vers \\"
 done
