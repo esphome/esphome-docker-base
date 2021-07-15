@@ -19,7 +19,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.7'
+        python-version: '3.9'
     - name: Set TAG
       run: |
         TAG="${GITHUB_SHA:0:7}"
@@ -68,7 +68,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.7'
+        python-version: '3.9'
     - name: Set TAG
       run: |
         TAG="${GITHUB_SHA:0:7}"
