@@ -1,4 +1,7 @@
-FROM ghcr.io/hassio-addons/debian-base/__HASSIO_ARCH__:4.2.1
+# Use --build-arg BUILD_FROM to set this
+# Defined in build.py:BASE_IMAGES
+ARG BUILD_FROM
+FROM ${BUILD_FROM}
 
 # Set shell
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -42,5 +45,6 @@ RUN \
     && (platformio run -d /opt/pio -t upload; echo "Done") \
     && rm -rf /opt/pio/
 
+ARG BUILD_ARCH
 LABEL \
-    io.hass.arch="__HASSIO_ARCH__"
+    io.hass.arch="${BUILD_ARCH}"

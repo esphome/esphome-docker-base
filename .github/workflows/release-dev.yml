@@ -8,133 +8,85 @@ on:
 jobs:
   deploy-docker:
     name: Build and publish docker containers
+    if: github.repository == 'esphome/esphome-docker-base'
     runs-on: ubuntu-latest
     strategy:
       matrix:
         arch: [amd64, armv7, aarch64]
-        build_type: ["hassio", "docker"]
+        build_type: ["ha-addon", "docker", "lint"]
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-
-      - run: python3 gen.py
-      - name: Set TAG
-        run: |
-          TAG="${GITHUB_SHA:0:7}"
-          echo "TAG=${TAG}" >>$GITHUB_ENV
-      - name: Set up env variables
-        run: |
-          if [[ "${{ matrix.build_type }}" == "hassio" ]]; then
-            build_to="esphome/esphome-hassio-base-${{ matrix.arch }}"
-            dockerfile="build/${{ matrix.arch }}/Dockerfile.hassio"
-          else
-            build_to="esphome/esphome-base-${{ matrix.arch }}"
-            dockerfile="build/${{ matrix.arch }}/Dockerfile"
-          fi
-
-          echo "BUILD_TO=${build_to}" >>$GITHUB_ENV
-          echo "DOCKERFILE=${dockerfile}" >>$GITHUB_ENV
-      - name: Pull for cache
-        run: |
-          docker pull "${BUILD_TO}:dev" || true
-      - name: Register QEMU binfmt
-        run: docker run --rm --privileged multiarch/qemu-user-static:5.2.0-2 --reset -p yes
-      - run: |
-          docker build \
-            --tag "${BUILD_TO}:${TAG}" \
-            --tag "${BUILD_TO}:dev" \
-            --cache-from "${BUILD_TO}:dev" \
-            --file "${DOCKERFILE}" \
-            .
-      - name: Log in to docker hub
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASSWORD}"
-      - run: |
-          docker push "${BUILD_TO}:${TAG}"
-          docker push "${BUILD_TO}:dev"
-
-  deploy-lint:
-    name: Build and publish lint docker container
-    needs: [deploy-docker]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-
-      - name: Set TAG
-        run: |
-          TAG="${GITHUB_SHA:0:7}"
-          echo "TAG=${TAG}" >>$GITHUB_ENV
-      - name: Set up env variables
-        run: |
-          echo "BUILD_TO=esphome/esphome-lint-base" >>$GITHUB_ENV
-          echo "DOCKERFILE=Dockerfile.lint" >>$GITHUB_ENV
-      - name: Pull for cache
-        run: |
-          docker pull "${BUILD_TO}:dev" || true
-      - name: Register QEMU binfmt
-        run: docker run --rm --privileged multiarch/qemu-user-static:5.2.0-2 --reset -p yes
-      - run: |
-          docker build \
-            --tag "${BUILD_TO}:${TAG}" \
-            --tag "${BUILD_TO}:dev" \
-            --cache-from "${BUILD_TO}:dev" \
-            --file "${DOCKERFILE}" \
-            --build-arg "BUILD_FROM=esphome/esphome-base-amd64:${TAG}" \
-            .
-      - name: Log in to docker hub
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASSWORD}"
-      - run: |
-          docker push "${BUILD_TO}:${TAG}"
-          docker push "${BUILD_TO}:dev"
-
-  deploy-docker-manifest:
-    runs-on: ubuntu-latest
-    needs: [deploy-docker]
-    strategy:
-      matrix:
-        build_type: ["hassio", "docker"]
-    steps:
-    - name: Enable experimental manifest support
-      run: |
-        mkdir -p ~/.docker
-        echo "{\"experimental\": \"enabled\"}" > ~/.docker/config.json
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
     - name: Set TAG
       run: |
         TAG="${GITHUB_SHA:0:7}"
-        echo "TAG=${TAG}" >>$GITHUB_ENV
+        echo "TAG=${TAG}" >> $GITHUB_ENV
+
+    - name: Run docker base build
+      run: |
+        ./build.py \
+          --tag "${TAG}" \
+          --arch "${{ matrix.arch }}" \
+          --build-type "docker" \
+          build
+      if: ${{ matrix.build_type == 'lint' }}
+
+    - name: Run build
+      run: |
+        ./build.py \
+          --tag "${TAG}" \
+          --arch "${{ matrix.arch }}" \
+          --build-type "${{ matrix.build_type }}" \
+          build
+
     - name: Log in to docker hub
       env:
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASSWORD}"
-    - name: "Create the manifest"
+
+    - name: Run push
       run: |
-        if [[ "${{ matrix.build_type }}" == "hassio" ]]; then
-          base="esphome/esphome-hassio-base"
-        else
-          base="esphome/esphome-base"
-        fi
+        ./build.py \
+          --tag "${TAG}" \
+          --arch "${{ matrix.arch }}" \
+          --build-type "${{ matrix.build_type }}" \
+          push
 
-        docker manifest create ${base}:${TAG} \
-          ${base}-aarch64:${TAG} \
-          ${base}-amd64:${TAG} \
-          ${base}-armv7:${TAG}
-        docker manifest push ${base}:${TAG}
+  deploy-docker-manifest:
+    if: github.repository == 'esphome/esphome-docker-base'
+    runs-on: ubuntu-latest
+    needs: [deploy-docker]
+    strategy:
+      matrix:
+        build_type: ["ha-addon", "docker", "lint"]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    - name: Set TAG
+      run: |
+        TAG="${GITHUB_SHA:0:7}"
+        echo "TAG=${TAG}" >> $GITHUB_ENV
+    - name: Enable experimental manifest support
+      run: |
+        mkdir -p ~/.docker
+        echo "{\"experimental\": \"enabled\"}" > ~/.docker/config.json
 
-        docker manifest create ${base}:dev \
-          ${base}-aarch64:${TAG} \
-          ${base}-amd64:${TAG} \
-          ${base}-armv7:${TAG}
-        docker manifest push ${base}:dev
+    - name: Log in to docker hub
+      env:
+        DOCKER_USER: ${{ secrets.DOCKER_USER }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASSWORD}"
+
+    - name: Run manifest
+      run: |
+        ./build.py \
+          --tag "${TAG}" \
+          --build-type "${{ matrix.build_type }}" \
+          manifest

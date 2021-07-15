@@ -21,7 +21,10 @@ The following docker images are built by this repository:
  - `esphome/esphome-hassio-base-armv7`
  - `esphome/esphome-hassio-base-aarch64`
  - `esphome/esphome-hassio-base` (manifest)
- - `esphome/esphome-lint-base`
+ - `esphome/esphome-lint-base-amd64`
+ - `esphome/esphome-lint-base-armv7`
+ - `esphome/esphome-lint-base-aarch64`
+ - `esphome/esphome-lint-base` (manifest)
 
 A new version is released by creating a release on Github. Please
 make sure the tag begins with a `v`. For example `v2.3.2`.
@@ -31,12 +34,7 @@ Docker hub. For example for tag `v2.3.2` the images `esphome/esphome-base-amd64:
 
 Next the base image value has to be updated in a couple of places:
 
- - `esphome/.github/workflows/ci-docker.yml`: `base_version=[...]`
- - `esphome/.github/workflows/release-dev.yml`: `base_version=[...]`
- - `esphome/.github/workflows/release.yml`: `base_version=[...]`
- - `esphome/docker/Dockerfile`: `ARG BUILD_FROM=...`
- - `esphome/docker/Dockerfile.dev`: `ARG BUILD_FROM=...`
- - `esphome/docker/Dockerfile.lint`: `ARG BUILD_FROM=...`
+ - `esphome/docker/build.py`: `BASE_VERSION=...`
  - `hassio/template/addon_config.yaml`: `base_image: [...]`
 
 The helper script `esphome/script/bump-docker-base-version.py` bumps

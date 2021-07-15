@@ -10,62 +10,30 @@ jobs:
     strategy:
       matrix:
         arch: [amd64, armv7, aarch64]
-        build_type: ["hassio", "docker"]
+        build_type: ["ha-addon", "docker", "lint"]
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    - name: Set TAG
+      run: |
+        echo "TAG=check" >> $GITHUB_ENV
 
-      - run: python3 gen.py
-      - name: Set up env variables
-        run: |
-          if [[ "${{ matrix.build_type }}" == "hassio" ]]; then
-            build_to="esphome/esphome-hassio-base-${{ matrix.arch }}"
-            dockerfile="build/${{ matrix.arch }}/Dockerfile.hassio"
-          else
-            build_to="esphome/esphome-base-${{ matrix.arch }}"
-            dockerfile="build/${{ matrix.arch }}/Dockerfile"
-          fi
+    - name: Run docker base build
+      run: |
+        ./build.py \
+          --tag "${TAG}" \
+          --arch "${{ matrix.arch }}" \
+          --build-type "docker" \
+          build
+      if: ${{ matrix.build_type == 'lint' }}
 
-          echo "BUILD_TO=${build_to}" >>$GITHUB_ENV
-          echo "DOCKERFILE=${dockerfile}" >>$GITHUB_ENV
-      - name: Pull for cache
-        run: |
-          docker pull "${BUILD_TO}:dev" || true
-      - name: Register QEMU binfmt
-        run: docker run --rm --privileged multiarch/qemu-user-static:5.2.0-2 --reset -p yes
-      - run: |
-          docker build \
-            --file "${DOCKERFILE}" \
-            --cache-from "${BUILD_TO}:dev" \
-            .
-
-  build-docker-lint:
-    name: Build docker lint container
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-
-      - run: python3 gen.py
-      - name: Pull for cache
-        run: |
-          docker pull "esphome/esphome-base-amd64:dev" || true
-          docker pull "esphome/esphome-lint-base:dev" || true
-      - run: |
-          docker build \
-            --file "build/amd64/Dockerfile" \
-            --cache-from "esphome/esphome-base-amd64:dev" \
-            --tag temp \
-            .
-      - run: |
-          docker build \
-            --file Dockerfile.lint \
-            --cache-from "esphome/esphome-lint-base:dev" \
-            --build-arg "BUILD_FROM=temp" \
-            .
+    - name: Run build
+      run: |
+        ./build.py \
+          --tag "${TAG}" \
+          --arch "${{ matrix.arch }}" \
+          --build-type "${{ matrix.build_type }}" \
+          build

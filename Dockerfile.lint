@@ -1,4 +1,6 @@
-ARG BUILD_FROM=esphome/esphome-base-amd64:latest
+# Use --build-arg BUILD_FROM to set this
+# Defined in build.py:BASE_IMAGES
+ARG BUILD_FROM
 FROM ${BUILD_FROM}
 
 RUN \
