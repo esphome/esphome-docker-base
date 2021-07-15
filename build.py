@@ -97,7 +97,7 @@ def main():
         print(f"$ {shlex.join(list(cmd))}")
         if not args.dry_run:
             rc = subprocess.call(list(cmd))
-            if rc != 0:
+            if rc != 0 and not ignore_error:
                 print("Command failed")
                 sys.exit(1)
 
