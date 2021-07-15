@@ -30,14 +30,14 @@ BASE_IMAGES = {
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--tag", type=str, required=True, help="TODO")
-parser.add_argument("--arch", choices=ARCHS, required=False, help="TODO")
-parser.add_argument("--build-type", choices=TYPES, required=True, help="TODO")
-parser.add_argument("--dry-run", action="store_true", help="TODO")
+parser.add_argument("--tag", type=str, required=True, help="The main docker tag to push to. If a version number also adds latest tag")
+parser.add_argument("--arch", choices=ARCHS, required=False, help="The architecture to build for")
+parser.add_argument("--build-type", choices=TYPES, required=True, help="The type of build to run")
+parser.add_argument("--dry-run", action="store_true", help="Don't run any commands, just print them")
 subparsers = parser.add_subparsers(help="Action to perform", dest="command", required=True)
-build_parser = subparsers.add_parser("build")
-push_parser = subparsers.add_parser("push")
-manifest_parser = subparsers.add_parser("manifest")
+build_parser = subparsers.add_parser("build", help="Build the image")
+push_parser = subparsers.add_parser("push", help="Tag the already built image and push it to docker hub")
+manifest_parser = subparsers.add_parser("manifest", help="Create a manifest from already pushed images")
 
 
 # only lists some possibilities, doesn't have to be perfect
