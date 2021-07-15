@@ -161,10 +161,12 @@ def main():
         targets += [f"ghcr.io/{manifest}:{tag}" for tag in tags_to_push]
         # 1. Create manifests
         for target in targets:
-            cmd = ["docker", "manifest", "create", target] + [
-                f"{DockerParams.for_type_arch_tag(args.build_type, arch, args.tag).build_to}:{args.tag}"
-                for arch in ARCHS
-            ]
+            cmd = ["docker", "manifest", "create", target]
+            for arch in ARCHS:
+                src = f"{DockerParams.for_type_arch_tag(args.build_type, arch, args.tag).build_to}:{args.tag}"
+                if target.startswith("ghcr.io"):
+                    src = f"ghcr.io/{src}"
+                cmd.append(src)
             run_command(*cmd)
         # 2. Push manifests
         for target in targets:
