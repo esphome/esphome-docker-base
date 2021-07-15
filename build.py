@@ -130,19 +130,15 @@ def main():
             )
 
         # 3. build
-        cmd = [
+        run_command(
             "docker", "build",
             "--build-arg", f"BUILD_FROM={params.build_from}",
+            "--build-arg", f"BUILD_ARCH={args.arch}",
             "--tag", f"{params.build_to}:{args.tag}",
             "--cache-from", cache_img,
             "--file", params.dockerfile,
-        ]
-        if args.build_type == TYPE_HA_ADDON:
-            cmd += [
-                "--build-arg", f"BUILD_ARCH={args.arch}"
-            ]
-        cmd += ["."]
-        run_command(*cmd)
+            "."
+        )
     elif args.command == "push":
         params = DockerParams.for_type_arch_tag(args.build_type, args.arch, args.tag)
         imgs = [f"{params.build_to}:{tag}" for tag in tags_to_push]
