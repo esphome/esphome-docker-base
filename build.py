@@ -114,7 +114,11 @@ def main():
     if args.command == "build":
         # 1. pull cache image
         params = DockerParams.for_type_arch_tag(args.build_type, args.arch, args.tag)
-        cache_img = f"ghcr.io/{params.build_to}:latest"
+        cache_tag = {
+            CHANNEL_DEV: "dev",
+            CHANNEL_RELEASE: "latest",
+        }[channel]
+        cache_img = f"ghcr.io/{params.build_to}:{cache_tag}"
         run_command("docker", "pull", cache_img, ignore_error=True)
 
         # 2. register QEMU binfmt (if not host arch)
@@ -126,19 +130,15 @@ def main():
             )
 
         # 3. build
-        cmd = [
+        run_command(
             "docker", "build",
             "--build-arg", f"BUILD_FROM={params.build_from}",
+            "--build-arg", f"BUILD_ARCH={args.arch}",
             "--tag", f"{params.build_to}:{args.tag}",
             "--cache-from", cache_img,
             "--file", params.dockerfile,
-        ]
-        if args.build_type == TYPE_HA_ADDON:
-            cmd += [
-                "--build-arg", f"BUILD_ARCH={args.arch}"
-            ]
-        cmd += ["."]
-        run_command(*cmd)
+            "."
+        )
     elif args.command == "push":
         params = DockerParams.for_type_arch_tag(args.build_type, args.arch, args.tag)
         imgs = [f"{params.build_to}:{tag}" for tag in tags_to_push]
