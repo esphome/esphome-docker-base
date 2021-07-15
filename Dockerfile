@@ -1,4 +1,8 @@
-FROM __DOCKER_ARCH__/debian:buster-20210511-slim
+# Use --build-arg BUILD_FROM to set this
+# Defined in build.py:BASE_IMAGES
+
+ARG BUILD_FROM
+FROM ${BUILD_FROM}
 
 RUN \
     apt-get update \
