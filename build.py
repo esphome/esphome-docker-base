@@ -114,7 +114,11 @@ def main():
     if args.command == "build":
         # 1. pull cache image
         params = DockerParams.for_type_arch_tag(args.build_type, args.arch, args.tag)
-        cache_img = f"ghcr.io/{params.build_to}:latest"
+        cache_tag = {
+            CHANNEL_DEV: "dev",
+            CHANNEL_RELEASE: "latest",
+        }[channel]
+        cache_img = f"ghcr.io/{params.build_to}:{cache_tag}"
         run_command("docker", "pull", cache_img, ignore_error=True)
 
         # 2. register QEMU binfmt (if not host arch)
