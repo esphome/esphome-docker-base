@@ -24,16 +24,16 @@ jobs:
     - name: Run docker base build
       run: |
         ./build.py \
-          --tag "${TAG}"
-          --arch "${{ matrix.arch }}"
-          --build-type "docker"
+          --tag "${TAG}" \
+          --arch "${{ matrix.arch }}" \
+          --build-type "docker" \
           build
       if: ${{ matrix.build_type == 'lint' }}
 
     - name: Run build
       run: |
         ./build.py \
-          --tag "${TAG}"
-          --arch "${{ matrix.arch }}"
-          --build-type "${{ matrix.build_type }}"
+          --tag "${TAG}" \
+          --arch "${{ matrix.arch }}" \
+          --build-type "${{ matrix.build_type }}" \
           build
