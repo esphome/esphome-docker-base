@@ -30,7 +30,7 @@ RUN \
     # Ubuntu python3-pip is missing wheel
     pip3 install --no-cache-dir \
         wheel==0.36.2 \
-        platformio==5.1.1 \
+        platformio==5.2.0 \
     # Change some platformio settings
     && platformio settings set enable_telemetry No \
     && platformio settings set check_libraries_interval 1000000 \
